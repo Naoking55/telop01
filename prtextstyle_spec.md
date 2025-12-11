@@ -1,0 +1,3 @@
+# prtextstyle（Essential Graphics）仕様書
+## 概要
+Essential Graphics のスタイル構造など...
