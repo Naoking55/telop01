@@ -338,9 +338,36 @@ class PRSLParser:
 
 
 def parse_prsl(filepath: str) -> List[Style]:
-    """PRSLファイルを解析（ラッパー関数）"""
-    parser = PRSLParser(filepath)
-    return parser.parse()
+    """PRSLファイルを解析（ラッパー関数）
+
+    自動的にPRSLフォーマットを検出します:
+    - <stylelist> 形式: prsl_parser_stylelist.py を使用
+    - <StyleProjectItem> 形式: 従来のPRSLParserを使用
+    """
+    try:
+        # フォーマット検出
+        tree = ET.parse(filepath)
+        root = tree.getroot()
+
+        if root.tag == 'stylelist':
+            # 新しい stylelist 形式
+            logger.info(f"Detected stylelist format in {os.path.basename(filepath)}")
+            try:
+                from prsl_parser_stylelist import parse_prsl_stylelist
+                return parse_prsl_stylelist(filepath)
+            except ImportError:
+                logger.warning("prsl_parser_stylelist.py not found, using fallback")
+                return []
+        else:
+            # 従来の StyleProjectItem 形式
+            logger.info(f"Detected StyleProjectItem format in {os.path.basename(filepath)}")
+            parser = PRSLParser(filepath)
+            return parser.parse()
+
+    except Exception as e:
+        logger.error(f"Error parsing {filepath}: {e}")
+        traceback.print_exc()
+        return []
 
 
 logger.info("✓ PRSL parser loaded")
