@@ -337,12 +337,255 @@ class PRSLParser:
             style.shadow.a = parsed["alpha"]
 
 
+# ==============================================================================
+# BLOCK 02b: Stylelist PRSL Parser (統合版)
+# ==============================================================================
+
+class StylelistPRSLParser:
+    """Parser for stylelist-based PRSL format
+
+    このパーサーは <stylelist><styleblock> 構造のXML形式PRSLファイルを処理します。
+    Adobe Premiere の実際のエクスポートファイルで使用される形式です。
+    """
+
+    def __init__(self, filepath: str):
+        self.filepath = filepath
+        self.styles: List[Style] = []
+
+    def parse(self) -> List[Style]:
+        """Parse PRSL file and return list of Styles"""
+        try:
+            tree = ET.parse(self.filepath)
+            root = tree.getroot()
+
+            if root.tag != 'stylelist':
+                logger.warning(f"Expected <stylelist> root, got <{root.tag}>")
+                return []
+
+            # Parse each styleblock
+            for styleblock in root.findall('styleblock'):
+                style = self._parse_styleblock(styleblock)
+                if style:
+                    self.styles.append(style)
+
+            logger.info(f"✓ Parsed {len(self.styles)} styles from {os.path.basename(self.filepath)}")
+            return self.styles
+
+        except Exception as e:
+            logger.error(f"Error parsing {self.filepath}: {e}")
+            traceback.print_exc()
+            return []
+
+    def _parse_styleblock(self, styleblock: ET.Element) -> Style:
+        """Parse a single styleblock element"""
+        # Get style name
+        name = styleblock.attrib.get('name', 'Unnamed Style')
+
+        # Create Style object
+        style = Style(name=name)
+
+        # Parse text_specification (font info)
+        text_spec = styleblock.find('text_specification')
+        if text_spec is not None:
+            self._parse_text_specification(text_spec, style)
+
+        # Parse style_data (fill, stroke, shadow)
+        style_data = styleblock.find('style_data')
+        if style_data is not None:
+            self._parse_style_data(style_data, style)
+
+        return style
+
+    def _parse_text_specification(self, text_spec: ET.Element, style: Style):
+        """Parse text_specification (font information)"""
+        font = text_spec.find('font')
+        if font is not None:
+            # Font family
+            family = font.find('family')
+            if family is not None and family.text:
+                style.font_family = family.text.strip()
+
+            # Font size
+            size = font.find('size')
+            if size is not None and size.text:
+                try:
+                    style.font_size = float(size.text)
+                except ValueError:
+                    pass
+
+    def _parse_style_data(self, style_data: ET.Element, style: Style):
+        """Parse style_data (fill, stroke, shadow)"""
+        # Parse fill (face > shader > colouring)
+        face = style_data.find('face')
+        if face is not None:
+            shader = face.find('shader')
+            if shader is not None:
+                colouring = shader.find('colouring')
+                if colouring is not None:
+                    self._parse_colouring(colouring, style)
+
+        # Parse shadow
+        shadow_elem = style_data.find('shadow')
+        if shadow_elem is not None:
+            self._parse_shadow(shadow_elem, style)
+
+        # Parse strokes (embellishment__0, embellishment__1, etc.)
+        # Note: This format uses "embellishment" for strokes
+        # For now, we'll skip detailed stroke parsing
+
+    def _parse_colouring(self, colouring: ET.Element, style: Style):
+        """Parse colouring (fill color/gradient)"""
+        # Check type: 5=solid, others=gradient
+        type_elem = colouring.find('type')
+        if type_elem is not None and type_elem.text:
+            colour_type = int(type_elem.text)
+        else:
+            colour_type = 5  # default to solid
+
+        if colour_type == 5:
+            # Solid color
+            solid = colouring.find('solid_colour')
+            if solid is not None:
+                all_elem = solid.find('all')
+                if all_elem is not None:
+                    r, g, b, a = self._parse_rgba(all_elem)
+                    style.fill = Fill(
+                        fill_type="solid",
+                        r=r, g=g, b=b, a=a
+                    )
+        else:
+            # Gradient (two_colour_ramp, four_colour_ramp, etc.)
+            two_colour = colouring.find('two_colour_ramp')
+            if two_colour is not None:
+                self._parse_two_colour_gradient(two_colour, style)
+
+    def _parse_rgba(self, elem: ET.Element) -> Tuple[int, int, int, int]:
+        """Parse RGBA from element (values are 0.0-1.0 floats)"""
+        def get_color_component(name: str) -> int:
+            comp = elem.find(name)
+            if comp is not None and comp.text:
+                try:
+                    # Convert 0.0-1.0 to 0-255
+                    return int(float(comp.text) * 255)
+                except ValueError:
+                    pass
+            return 255 if name == 'alpha' else 0
+
+        r = get_color_component('red')
+        g = get_color_component('green')
+        b = get_color_component('blue')
+        a = get_color_component('alpha')
+
+        return (r, g, b, a)
+
+    def _parse_two_colour_gradient(self, two_colour: ET.Element, style: Style):
+        """Parse two-color gradient"""
+        stops = []
+
+        # Top color (position 0.0)
+        top = two_colour.find('top')
+        if top is not None:
+            r, g, b, a = self._parse_rgba(top)
+            stops.append(GradientStop(position=0.0, r=r, g=g, b=b, a=a))
+
+        # Bottom color (position 1.0)
+        bottom = two_colour.find('bottom')
+        if bottom is not None:
+            r, g, b, a = self._parse_rgba(bottom)
+            stops.append(GradientStop(position=1.0, r=r, g=g, b=b, a=a))
+
+        # Angle
+        angle_elem = two_colour.find('angle')
+        angle = 0.0
+        if angle_elem is not None and angle_elem.text:
+            try:
+                angle = float(angle_elem.text)
+            except ValueError:
+                pass
+
+        if stops:
+            style.fill = Fill(
+                fill_type="gradient",
+                gradient_stops=stops,
+                gradient_angle=angle
+            )
+
+    def _parse_shadow(self, shadow_elem: ET.Element, style: Style):
+        """Parse shadow element"""
+        # Check if shadow is enabled
+        on_elem = shadow_elem.find('on')
+        if on_elem is not None and on_elem.text:
+            enabled = on_elem.text.strip().lower() == 'true'
+        else:
+            enabled = False
+
+        if not enabled:
+            return
+
+        # Blur (softness)
+        softness = shadow_elem.find('softness')
+        blur = 4.0
+        if softness is not None and softness.text:
+            try:
+                blur = float(softness.text) / 10.0  # Scale to reasonable value
+            except ValueError:
+                pass
+
+        # Color
+        colour = shadow_elem.find('colour')
+        r, g, b, a = (0, 0, 0, 120)
+        if colour is not None:
+            r, g, b, a = self._parse_rgba(colour)
+
+        # Offset (angle + magnitude)
+        offset = shadow_elem.find('offset')
+        offset_x, offset_y = 2.0, 2.0
+        if offset is not None:
+            angle_elem = offset.find('angle')
+            mag_elem = offset.find('magnitude')
+
+            angle = 90.0
+            magnitude = 5.0
+
+            if angle_elem is not None and angle_elem.text:
+                try:
+                    angle = float(angle_elem.text)
+                except ValueError:
+                    pass
+
+            if mag_elem is not None and mag_elem.text:
+                try:
+                    magnitude = float(mag_elem.text)
+                except ValueError:
+                    pass
+
+            # Convert angle+magnitude to x,y offsets
+            rad = math.radians(angle)
+            offset_x = magnitude * math.cos(rad)
+            offset_y = -magnitude * math.sin(rad)
+
+        style.shadow = Shadow(
+            enabled=True,
+            offset_x=offset_x,
+            offset_y=offset_y,
+            blur=blur,
+            r=r, g=g, b=b, a=a
+        )
+
+
+logger.info("✓ Stylelist PRSL parser loaded")
+
+
+# ==============================================================================
+# BLOCK 02c: 統合パーサー関数
+# ==============================================================================
+
 def parse_prsl(filepath: str) -> List[Style]:
     """PRSLファイルを解析（ラッパー関数）
 
     自動的にPRSLフォーマットを検出します:
-    - <stylelist> 形式: prsl_parser_stylelist.py を使用
-    - <StyleProjectItem> 形式: 従来のPRSLParserを使用
+    - <stylelist> 形式: StylelistPRSLParser を使用（統合版）
+    - <StyleProjectItem> 形式: 従来のPRSLParser を使用
     """
     try:
         # フォーマット検出
@@ -350,14 +593,10 @@ def parse_prsl(filepath: str) -> List[Style]:
         root = tree.getroot()
 
         if root.tag == 'stylelist':
-            # 新しい stylelist 形式
+            # stylelist 形式（統合版パーサー使用）
             logger.info(f"Detected stylelist format in {os.path.basename(filepath)}")
-            try:
-                from prsl_parser_stylelist import parse_prsl_stylelist
-                return parse_prsl_stylelist(filepath)
-            except ImportError:
-                logger.warning("prsl_parser_stylelist.py not found, using fallback")
-                return []
+            parser = StylelistPRSLParser(filepath)
+            return parser.parse()
         else:
             # 従来の StyleProjectItem 形式
             logger.info(f"Detected StyleProjectItem format in {os.path.basename(filepath)}")
