@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PremiereData Version="3">
+  <Project>
+    <StyleProjectItem>
+      <ProjectItem>
+        <Name>サンプルスタイル - 単色</Name>
+        <MediaType>0</MediaType>
+      </ProjectItem>
+      <Component ObjectID="1">
+        <Params>
+          <!-- Font Size -->
+          <Param Index="4">
+            <StartKeyframeValue>AAAASEA=</StartKeyframeValue>
+          </Param>
+          <!-- Fill Color (Red) -->
+          <Param Index="11">
+            <StartKeyframeValue>AAAAgD8AAAAAAAAAAAAA/z8=</StartKeyframeValue>
+          </Param>
+          <!-- Stroke Width -->
+          <Param Index="20">
+            <StartKeyframeValue>AAAAMEA=</StartKeyframeValue>
+          </Param>
+          <!-- Stroke Color (Black) -->
+          <Param Index="21">
+            <StartKeyframeValue>AAAAAAAAAAAAAAAAAAAAAIA/</StartKeyframeValue>
+          </Param>
+          <!-- Shadow -->
+          <Param Index="50">
+            <StartKeyframeValue>AAAAQEAAAABAAACAQAAAQEA=</StartKeyframeValue>
+          </Param>
+        </Params>
+      </Component>
+    </StyleProjectItem>
+
+    <StyleProjectItem>
+      <ProjectItem>
+        <Name>サンプルスタイル - グラデーション</Name>
+        <MediaType>0</MediaType>
+      </ProjectItem>
+      <Component ObjectID="2">
+        <Params>
+          <!-- Font Size -->
+          <Param Index="4">
+            <StartKeyframeValue>AACAQkA=</StartKeyframeValue>
+          </Param>
+          <!-- Fill Color (Blue to Orange gradient - simplified) -->
+          <Param Index="11">
+            <StartKeyframeValue>AAAAAAAAAEAAAACAP83MTD8=</StartKeyframeValue>
+          </Param>
+        </Params>
+      </Component>
+    </StyleProjectItem>
+
+    <StyleProjectItem>
+      <ProjectItem>
+        <Name>サンプルスタイル - 多重ストローク</Name>
+        <MediaType>0</MediaType>
+      </ProjectItem>
+      <Component ObjectID="3">
+        <Params>
+          <!-- Font Size -->
+          <Param Index="4">
+            <StartKeyframeValue>AABAQkA=</StartKeyframeValue>
+          </Param>
+          <!-- Fill Color (White) -->
+          <Param Index="11">
+            <StartKeyframeValue>AAAAgD8AAIA/AACAP83MTD8=</StartKeyframeValue>
+          </Param>
+          <!-- Stroke 1 Width -->
+          <Param Index="20">
+            <StartKeyframeValue>AAAAAQA=</StartKeyframeValue>
+          </Param>
+          <!-- Stroke 1 Color (Dark Blue) -->
+          <Param Index="21">
+            <StartKeyframeValue>AAAAAAAAAEAAAACAP83MTD8=</StartKeyframeValue>
+          </Param>
+          <!-- Stroke 2 Width -->
+          <Param Index="22">
+            <StartKeyframeValue>AAAAEEA=</StartKeyframeValue>
+          </Param>
+          <!-- Stroke 2 Color (Light Blue) -->
+          <Param Index="23">
+            <StartKeyframeValue>AABAPwAAgD8AAIA/zcxMPw==</StartKeyframeValue>
+          </Param>
+        </Params>
+      </Component>
+    </StyleProjectItem>
+  </Project>
+</PremiereData>

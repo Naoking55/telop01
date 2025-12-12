@@ -1,0 +1,933 @@
+================================================================================
+PRSL Stylelist 形式完全解析: 10styles.prsl
+================================================================================
+
+ルート要素: <stylelist>
+
+総タグ種類数: 111
+総要素数: 2548
+
+================================================================================
+全タグ詳細（アルファベット順）
+================================================================================
+
+<absolute_embelishment_sizes>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['style_data']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<all>
+  出現回数: 52
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp', 'solid_colour', 'two_colour_bevel', 'two_colour_ramp']
+
+<alpha>
+  出現回数: 231
+  属性: ['type']
+  親要素: ['all', 'bottom', 'bottom_left', 'bottom_right', 'colour', 'left', 'right', 'top', 'top_left', 'top_right']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<alpha_scale>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<angle>
+  出現回数: 62
+  属性: ['type']
+  親要素: ['distort', 'light', 'offset', 'position', 'two_colour_ramp']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<auto_align>
+  出現回数: 13
+  子要素: ['object', 'object_x', 'object_y', 'rule', 'rule_x', 'rule_y']
+  親要素: ['texture']
+
+<auto_reflect>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<auto_rotate>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'true'
+    - 'true'
+    - 'true'
+
+<balance>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_bevel']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<baseline_shift>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<blue>
+  出現回数: 221
+  属性: ['type']
+  親要素: ['all', 'bottom', 'bottom_left', 'bottom_right', 'colour', 'left', 'right', 'top', 'top_left', 'top_right']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<bold>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['font']
+  テキストサンプル:
+    - 'true'
+    - 'true'
+    - 'true'
+
+<bottom>
+  出現回数: 39
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp', 'two_colour_bevel', 'two_colour_ramp']
+
+<bottom_left>
+  出現回数: 13
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp']
+
+<bottom_right>
+  出現回数: 13
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp']
+
+<bottom_start>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_ramp']
+  テキストサンプル:
+    - '25'
+    - '25'
+    - '25'
+
+<broken_text_ref>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '4097'
+    - '4097'
+    - '4097'
+
+<category>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['font']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<colour>
+  出現回数: 23
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['shadow', 'sheen']
+
+<colouring>
+  出現回数: 13
+  子要素: ['four_colour_ramp', 'solid_colour', 'two_colour_bevel', 'two_colour_ramp', 'type']
+  親要素: ['shader']
+
+<composite_rule>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - '4'
+    - '4'
+    - '4'
+
+<depth>
+  出現回数: 3
+  子要素: ['size']
+  親要素: ['geometry']
+
+<depth_angle>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['style_data']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<distort>
+  出現回数: 10
+  子要素: ['angle', 'magnitude', 'x', 'y']
+  親要素: ['style_data']
+
+<drop_face>
+  出現回数: 3
+  子要素: ['offset']
+  親要素: ['geometry']
+
+<edge>
+  出現回数: 3
+  子要素: ['size']
+  親要素: ['geometry']
+
+<embellishment_10>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment_11>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__0>
+  出現回数: 10
+  子要素: ['existence', 'geometry', 'shader']
+  親要素: ['style_data']
+
+<embellishment__1>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__2>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__3>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__4>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__5>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__6>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__7>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__8>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<embellishment__9>
+  出現回数: 10
+  子要素: ['existence']
+  親要素: ['style_data']
+
+<existence>
+  出現回数: 120
+  属性: ['type']
+  親要素: ['embellishment_10', 'embellishment_11', 'embellishment__0', 'embellishment__1', 'embellishment__2', 'embellishment__3', 'embellishment__4', 'embellishment__5', 'embellishment__6', 'embellishment__7', 'embellishment__8', 'embellishment__9']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '0'
+
+<face>
+  出現回数: 10
+  子要素: ['shader']
+  親要素: ['style_data']
+
+<family>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['font']
+  テキストサンプル:
+    - 'A-OTF リュウミン Pro'
+    - 'A-OTF リュウミン Pro'
+    - 'A-OTF リュウミン Pro'
+
+<font>
+  出現回数: 10
+  子要素: ['bold', 'category', 'family', 'italic', 'name', 'style', 'type']
+  親要素: ['text_specification']
+
+<four_colour_ramp>
+  出現回数: 13
+  子要素: ['all', 'bottom', 'bottom_left', 'bottom_right', 'left', 'right', 'top', 'top_left', 'top_right']
+  親要素: ['colouring']
+
+<geometry>
+  出現回数: 3
+  子要素: ['depth', 'drop_face', 'edge', 'type']
+  親要素: ['embellishment__0']
+
+<glow>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['shadow']
+  テキストサンプル:
+    - '38'
+    - '38'
+    - '38'
+
+<green>
+  出現回数: 216
+  属性: ['type']
+  親要素: ['all', 'bottom', 'bottom_left', 'bottom_right', 'colour', 'left', 'right', 'top', 'top_left', 'top_right']
+  テキストサンプル:
+    - '0.447059'
+    - '0.447059'
+    - '0.447059'
+
+<height>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '167'
+    - '244'
+    - '244'
+
+<horizontal>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['scaling']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<inner_embellishment_count>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['style_data']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<invert_composite>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<italic>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['font']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<kerning>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '1.75'
+    - '1.75'
+    - '1.75'
+
+<leading>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<left>
+  出現回数: 13
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp']
+
+<light>
+  出現回数: 13
+  子要素: ['angle', 'magnitude']
+  親要素: ['two_colour_bevel']
+
+<linked>
+  出現回数: 20
+  属性: ['type']
+  親要素: ['style_data', 'text_specification']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<lit>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_bevel']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<magnitude>
+  出現回数: 49
+  属性: ['type']
+  親要素: ['distort', 'light', 'offset', 'position']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '-1'
+
+<mix>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<name>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['font']
+  テキストサンプル:
+    - 'RyuminPro-ExHeavy'
+    - 'RyuminPro-ExHeavy'
+    - 'RyuminPro-ExHeavy'
+
+<object>
+  出現回数: 26
+  属性: ['type']
+  親要素: ['auto_align', 'scaling']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<object_x>
+  出現回数: 26
+  属性: ['type']
+  親要素: ['auto_align', 'scaling']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<object_y>
+  出現回数: 26
+  属性: ['type']
+  親要素: ['auto_align', 'scaling']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<offset>
+  出現回数: 26
+  子要素: ['angle', 'magnitude', 'x', 'y']
+  親要素: ['drop_face', 'shadow', 'texture']
+
+<on>
+  出現回数: 49
+  属性: ['type']
+  親要素: ['shader', 'shadow', 'sheen', 'texture']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'true'
+
+<pixel_aspect_ratio>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - '1.11111'
+    - '1.11111'
+    - '1.11111'
+
+<position>
+  出現回数: 13
+  子要素: ['angle', 'magnitude']
+  親要素: ['sheen']
+
+<radial>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_ramp']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<ramp_alpha_is_key>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<ramp_domain>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['style_data']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<ratio>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<red>
+  出現回数: 221
+  属性: ['type']
+  親要素: ['all', 'bottom', 'bottom_left', 'bottom_right', 'colour', 'left', 'right', 'top', 'top_left', 'top_right']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<repeat>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_ramp']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<right>
+  出現回数: 13
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp']
+
+<rule>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['auto_align']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<rule_x>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['auto_align']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<rule_y>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['auto_align']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<scaling>
+  出現回数: 13
+  子要素: ['horizontal', 'object', 'object_x', 'object_y', 'vertical']
+  親要素: ['texture']
+
+<shader>
+  出現回数: 13
+  子要素: ['colouring', 'on', 'sheen', 'texture']
+  親要素: ['embellishment__0', 'face']
+
+<shadow>
+  出現回数: 10
+  子要素: ['colour', 'glow', 'offset', 'on', 'softness']
+  親要素: ['style_data']
+
+<shape>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_bevel']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<sheen>
+  出現回数: 13
+  子要素: ['colour', 'on', 'position', 'size']
+  親要素: ['shader']
+
+<size>
+  出現回数: 41
+  属性: ['type']
+  親要素: ['depth', 'edge', 'sheen', 'text_specification', 'two_colour_bevel']
+  テキストサンプル:
+    - '167'
+    - '0'
+    - '0'
+
+<slant>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<small_caps>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<small_caps_size>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '100'
+    - '100'
+    - '100'
+
+<softness>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['shadow']
+  テキストサンプル:
+    - '45'
+    - '45'
+    - '45'
+
+<solid_colour>
+  出現回数: 13
+  子要素: ['all']
+  親要素: ['colouring']
+
+<style>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['font']
+  テキストサンプル:
+    - 'EH-KL'
+    - 'EH-KL'
+    - 'EH-KL'
+
+<style_data>
+  出現回数: 10
+  子要素: ['absolute_embelishment_sizes', 'depth_angle', 'distort', 'embellishment_10', 'embellishment_11', 'embellishment__0', 'embellishment__1', 'embellishment__2', 'embellishment__3', 'embellishment__4', 'embellishment__5', 'embellishment__6', 'embellishment__7', 'embellishment__8', 'embellishment__9', 'face', 'inner_embellishment_count', 'linked', 'ramp_domain', 'shadow', 'style_ref']
+  親要素: ['styleblock']
+
+<style_ref>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['style_data']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+<styleblock>
+  出現回数: 10
+  属性: ['name', 'version']
+  子要素: ['style_data', 'text_specification']
+  親要素: ['stylelist']
+
+<stylelist>
+  出現回数: 1
+  子要素: ['styleblock']
+
+<text_specification>
+  出現回数: 10
+  子要素: ['baseline_shift', 'broken_text_ref', 'font', 'height', 'kerning', 'leading', 'linked', 'ratio', 'size', 'slant', 'small_caps', 'small_caps_size', 'underline', 'width']
+  親要素: ['styleblock']
+
+<texture>
+  出現回数: 13
+  子要素: ['alpha_scale', 'auto_align', 'auto_reflect', 'auto_rotate', 'composite_rule', 'invert_composite', 'mix', 'offset', 'on', 'pixel_aspect_ratio', 'ramp_alpha_is_key', 'scaling', 'texture_alpha_is_key', 'tile_x', 'tile_y']
+  親要素: ['shader']
+
+<texture_alpha_is_key>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'true'
+    - 'true'
+    - 'true'
+
+<tile_x>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'true'
+    - 'true'
+    - 'true'
+
+<tile_y>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['texture']
+  テキストサンプル:
+    - 'true'
+    - 'true'
+    - 'true'
+
+<top>
+  出現回数: 39
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp', 'two_colour_bevel', 'two_colour_ramp']
+
+<top_left>
+  出現回数: 13
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp']
+
+<top_right>
+  出現回数: 13
+  子要素: ['alpha', 'blue', 'green', 'red']
+  親要素: ['four_colour_ramp']
+
+<top_start>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_ramp']
+  テキストサンプル:
+    - '75'
+    - '75'
+    - '75'
+
+<tube>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['two_colour_bevel']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<two_colour_bevel>
+  出現回数: 13
+  子要素: ['all', 'balance', 'bottom', 'light', 'lit', 'shape', 'size', 'top', 'tube']
+  親要素: ['colouring']
+
+<two_colour_ramp>
+  出現回数: 13
+  子要素: ['all', 'angle', 'bottom', 'bottom_start', 'radial', 'repeat', 'top', 'top_start']
+  親要素: ['colouring']
+
+<type>
+  出現回数: 26
+  属性: ['type']
+  親要素: ['colouring', 'font', 'geometry']
+  テキストサンプル:
+    - '1'
+    - '5'
+    - '1'
+
+<underline>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - 'false'
+    - 'false'
+    - 'false'
+
+<vertical>
+  出現回数: 13
+  属性: ['type']
+  親要素: ['scaling']
+  テキストサンプル:
+    - '1'
+    - '1'
+    - '1'
+
+<width>
+  出現回数: 10
+  属性: ['type']
+  親要素: ['text_specification']
+  テキストサンプル:
+    - '167'
+    - '244'
+    - '244'
+
+<x>
+  出現回数: 23
+  属性: ['type']
+  親要素: ['distort', 'offset']
+  テキストサンプル:
+    - '-0'
+    - '0'
+    - '-0'
+
+<y>
+  出現回数: 23
+  属性: ['type']
+  親要素: ['distort', 'offset']
+  テキストサンプル:
+    - '0'
+    - '0'
+    - '0'
+
+================================================================================
+構造ツリー（最初のstyleblock）
+================================================================================
+<styleblock version="3.0" name="A-OTF リュウミン Pro EH-KL 167">
+  <text_specification>
+    <font>
+      <name type="wstring"> = 'RyuminPro-ExHeavy'
+      <family type="wstring"> = 'A-OTF リュウミン Pro'
+      <style type="wstring"> = 'EH-KL'
+      <bold type="boolean"> = 'true'
+      <italic type="boolean"> = 'false'
+      <type type="enumeration"> = '1'
+      <category type="integer"> = '1'
+    <underline type="boolean"> = 'false'
+    <small_caps type="boolean"> = 'false'
+    <linked type="boolean"> = 'false'
+    <broken_text_ref type="integer"> = '4097'
+    <height type="real"> = '167'
+    <width type="real"> = '167'
+    <size type="real"> = '167'
+    <ratio type="real"> = '1'
+    <leading type="real"> = '0'
+    <kerning type="real"> = '1.75'
+    <slant type="real"> = '0'
+    <small_caps_size type="real"> = '100'
+    <baseline_shift type="real"> = '0'
+  <style_data>
+    <distort>
+      <angle type="real"> = '0'
+      <magnitude type="real"> = '0'
+      <x type="real"> = '-0'
+      <y type="real"> = '0'
+    <face>
+      <shader>
+        <colouring>
+          <four_colour_ramp>
+          <two_colour_ramp>
+          <two_colour_bevel>
+          <solid_colour>
+          <type type="enumeration"> = '5'
+        <texture>
+          <on type="boolean"> = 'false'
+          <mix type="real"> = '1'
+          <texture_alpha_is_key type="boolean"> = 'true'
+          <ramp_alpha_is_key type="boolean"> = 'false'
+          <offset>
+          <auto_align>
+          <scaling>
+          <composite_rule type="enumeration"> = '4'
+          <invert_composite type="boolean"> = 'false'
+          <pixel_aspect_ratio type="real"> = '1.11111'
+          <tile_x type="boolean"> = 'true'
+          <tile_y type="boolean"> = 'true'
+          <alpha_scale type="real"> = '1'
+          <auto_rotate type="boolean"> = 'true'
+          <auto_reflect type="boolean"> = 'false'
+        <sheen>
+          <on type="boolean"> = 'false'
+          <colour>
+          <size type="real"> = '0'
+          <position>
+        <on type="boolean"> = 'true'
+    <embellishment__0>
+      <existence type="enumeration"> = '1'
+    <embellishment__1>
+      <existence type="enumeration"> = '1'
+    <embellishment__2>
+      <existence type="enumeration"> = '0'
+    <embellishment__3>
+      <existence type="enumeration"> = '0'
+    <embellishment__4>
+      <existence type="enumeration"> = '0'
+    <embellishment__5>
+      <existence type="enumeration"> = '0'
+    <embellishment__6>
+      <existence type="enumeration"> = '0'
+    <embellishment__7>
+      <existence type="enumeration"> = '0'
+    <embellishment__8>
+      <existence type="enumeration"> = '0'
+    <embellishment__9>
+      <existence type="enumeration"> = '0'
+    <embellishment_10>
+      <existence type="enumeration"> = '0'
+    <embellishment_11>
+      <existence type="enumeration"> = '0'
+    <inner_embellishment_count type="integer"> = '0'
+    <depth_angle type="real"> = '0'
+    <shadow>
+      <softness type="real"> = '45'
+      <on type="boolean"> = 'true'
+      <glow type="real"> = '38'
+      <colour>
+        <red type="real"> = '1'
+        <green type="real"> = '1'
+        <blue type="real"> = '1'
+        <alpha type="real"> = '1'
+      <offset>
+        <angle type="real"> = '90'
+        <magnitude type="real"> = '0'
+    <absolute_embelishment_sizes type="boolean"> = 'false'
+    <linked type="boolean"> = 'false'
+    <style_ref type="integer"> = '0'
+    <ramp_domain type="enumeration"> = '0'
+
+================================================================================
+✅ 解析完了
+================================================================================
+統計データを prsl_analysis_stats.json に保存しました
