@@ -35,6 +35,17 @@ except ImportError:
         gradient_stops: List[GradientStop] = field(default_factory=list)
         gradient_angle: float = 0.0
 
+        def is_gradient(self) -> bool:
+            return self.fill_type == "gradient"
+
+        @property
+        def color(self) -> Tuple[int, int, int]:
+            return (self.r, self.g, self.b)
+
+        @property
+        def opacity(self) -> float:
+            return self.a / 255.0
+
     @dataclass
     class Stroke:
         width: float = 1.0
@@ -42,6 +53,14 @@ except ImportError:
         g: int = 0
         b: int = 0
         a: int = 255
+
+        @property
+        def color(self) -> Tuple[int, int, int]:
+            return (self.r, self.g, self.b)
+
+        @property
+        def opacity(self) -> float:
+            return self.a / 255.0
 
     @dataclass
     class Shadow:
@@ -53,6 +72,18 @@ except ImportError:
         g: int = 0
         b: int = 0
         a: int = 120
+
+        @property
+        def color(self) -> Tuple[int, int, int]:
+            return (self.r, self.g, self.b)
+
+        @property
+        def alpha(self) -> float:
+            return self.a / 255.0
+
+        @property
+        def opacity(self) -> float:
+            return self.a / 255.0
 
     @dataclass
     class Style:
