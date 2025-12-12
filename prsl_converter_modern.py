@@ -952,10 +952,11 @@ def export_prtextstyle(style: Style, filepath: str):
         # グラデーション
         grad_payload = b""
         for stop in style.fill.gradient_stops:
-            stop_data = struct.pack("<ffIIII",
+            # Premiere 2025: 色をfloat (0.0-1.0) で出力
+            stop_data = struct.pack("<ffffff",
                 float(stop.position),
                 float(stop.midpoint),
-                stop.r, stop.g, stop.b, stop.a
+                stop.r / 255.0, stop.g / 255.0, stop.b / 255.0, stop.a / 255.0
             )
             stop_data += b"\x00" * (48 - len(stop_data))
             grad_payload += build_tlv(0x00F0, stop_data)
@@ -963,21 +964,31 @@ def export_prtextstyle(style: Style, filepath: str):
         grad_payload += build_tlv(0x000A, struct.pack("<f", float(style.fill.gradient_angle)))
         blob += build_tlv(0x0005, grad_payload)
     else:
-        # 単色
-        blob += build_tlv(0x0004, bytes([style.fill.r, style.fill.g, style.fill.b, style.fill.a]))
+        # 単色 - Premiere 2025: 色をfloat (0.0-1.0) で出力
+        blob += build_tlv(0x0004, struct.pack("<ffff",
+            style.fill.r / 255.0,
+            style.fill.g / 255.0,
+            style.fill.b / 255.0,
+            style.fill.a / 255.0
+        ))
 
     # Strokes
     for stroke in style.strokes:
-        s_payload = struct.pack("<fBBBB", float(stroke.width), stroke.r, stroke.g, stroke.b, stroke.a)
+        # Premiere 2025: 色をfloat (0.0-1.0) で出力
+        s_payload = struct.pack("<fffff",
+            float(stroke.width),
+            stroke.r / 255.0, stroke.g / 255.0, stroke.b / 255.0, stroke.a / 255.0
+        )
         blob += build_tlv(0x0006, s_payload)
 
     # Shadow
     if style.shadow.enabled:
-        s_payload = struct.pack("<fffBBBB",
+        # Premiere 2025: 色をfloat (0.0-1.0) で出力
+        s_payload = struct.pack("<fffffff",
             float(style.shadow.offset_x),
             float(style.shadow.offset_y),
             float(style.shadow.blur),
-            style.shadow.r, style.shadow.g, style.shadow.b, style.shadow.a
+            style.shadow.r / 255.0, style.shadow.g / 255.0, style.shadow.b / 255.0, style.shadow.a / 255.0
         )
         blob += build_tlv(0x0007, s_payload)
 
