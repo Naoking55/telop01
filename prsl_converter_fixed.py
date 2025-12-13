@@ -187,14 +187,31 @@ class PrtextstyleConverter:
         # バイナリを更新
         base_binary_elem.text = base64.b64encode(bytes(modified_binary)).decode('ascii')
 
-        # スタイル名を更新
+        # スタイル名を更新（非常に目立つ名前にする）
         name_elem = self.base_style.find('.//Name')
         if name_elem is not None:
-            name_elem.text = style.name
+            name_elem.text = f"【変換テスト】{style.name}"
+
+        # 説明用に、他の全スタイルの名前を変更
+        style_index = 0
+        for style_item in self.root.findall('.//StyleProjectItem'):
+            name = style_item.find('.//Name')
+            if name is not None:
+                if style_index == 0:
+                    # 最初のスタイル（変換済み）
+                    name.text = f"【★ここをテスト★】{style.name} - Fill:RGB({style.fill.r},{style.fill.g},{style.fill.b})"
+                else:
+                    # 他のスタイル（未使用）
+                    original_name = name.text
+                    name.text = f"【使用しない】{original_name}"
+                style_index += 1
+
+        print(f"  スタイル名を更新: 1個目が変換済み、残り{style_index-1}個は未使用")
 
         # 保存
         self.tree.write(output_filepath, encoding='utf-8', xml_declaration=True)
         print(f"\n✓ Saved: {output_filepath}")
+        print(f"  → Premiereで「【★ここをテスト★】」という名前のスタイルを探してください")
         return True
 
 
