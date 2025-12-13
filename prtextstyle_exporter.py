@@ -299,26 +299,42 @@ class PrtextstyleTemplateExporter:
         # Base64エンコード
         b64 = base64.b64encode(binary).decode('ascii')
 
-        # XML構築（実際のprtextstyleファイルと同じ構造）
-        root = ET.Element('PremiereData', Version='3')
+        # テンプレートファイルのXML構造を読み込んで再利用
+        try:
+            tree = ET.parse(self.template_path)
+            root = tree.getroot()
 
-        # StyleProjectItem
-        style_project = ET.SubElement(root, 'StyleProjectItem', Class='StyleProjectItem', Version='1')
-        name_elem = ET.SubElement(style_project, 'Name')
-        name_elem.text = style_name
+            # すべてのStyleProjectItemを更新
+            for style_item in root.findall('.//StyleProjectItem'):
+                # スタイル名を更新
+                name_elem = style_item.find('.//Name')
+                if name_elem is not None:
+                    name_elem.text = style_name
 
-        component = ET.SubElement(style_project, 'Component', Class='VideoFilterComponent')
+                # バイナリデータを更新
+                for binary_elem in style_item.findall('.//StartKeyframeValue[@Encoding="base64"]'):
+                    binary_elem.text = b64
 
-        # バイナリデータ
-        param = ET.SubElement(component, 'Param', Index='0')
-        arb_param = ET.SubElement(param, 'ArbVideoComponentParam')
-        value_elem = ET.SubElement(arb_param, 'StartKeyframeValue', Encoding='base64')
-        value_elem.text = b64
+            # XMLをファイルに書き込み
+            tree.write(output_path, encoding='utf-8', xml_declaration=True)
 
-        # XMLをファイルに書き込み
-        tree = ET.ElementTree(root)
-        ET.indent(tree, space='  ')
-        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        except Exception as e:
+            logger.warning(f"Failed to use template structure: {e}, using simple structure")
+            # フォールバック: シンプルな構造
+            root = ET.Element('PremiereData', Version='3')
+            style_project = ET.SubElement(root, 'StyleProjectItem', Class='StyleProjectItem', Version='1')
+            name_elem = ET.SubElement(style_project, 'Name')
+            name_elem.text = style_name
+
+            component = ET.SubElement(style_project, 'Component', Class='VideoFilterComponent')
+            param = ET.SubElement(component, 'Param', Index='0')
+            arb_param = ET.SubElement(param, 'ArbVideoComponentParam')
+            value_elem = ET.SubElement(arb_param, 'StartKeyframeValue', Encoding='base64')
+            value_elem.text = b64
+
+            tree = ET.ElementTree(root)
+            ET.indent(tree, space='  ')
+            tree.write(output_path, encoding='utf-8', xml_declaration=True)
 
 
 def convert_prsl_style_to_prtextstyle_params(prsl_style) -> PrtextstyleParams:
