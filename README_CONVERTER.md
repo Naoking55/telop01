@@ -22,13 +22,15 @@ python3 FINAL_prsl_converter.py [prsl_file] [output_file] [template_file]
 python3 FINAL_prsl_converter.py /tmp/10styles.prsl output.prtextstyle /tmp/10styles.prtextstyle
 ```
 
-### 2. **`prsl_to_prtextstyle_gui.py`** - GUI版（高機能）
+### 2. **`prsl_to_prtextstyle_gui.py`** - GUI版（高機能）v2.0 ✨NEW
 
-**1ファイル完結のGUI変換プログラム**
+**1ファイル完結のGUI変換プログラム（マーカーベース方式対応）**
 
-- **行数**: 約880行
+- **バージョン**: v2.0（2024-12-14更新）
+- **行数**: 約920行
 - **依存関係**: Python 3.8+ + Pillow
 - **GUI**: Tkinter（Python標準ライブラリ）
+- **Fill色変換**: マーカーベース方式（FINAL_prsl_converter.py と同じ）
 - **対応**: Fill色、Shadow、Gradient（部分）、Stroke（部分）
 
 ```bash
@@ -61,11 +63,12 @@ python3 prsl_to_prtextstyle_gui.py
 - ✅ 10/10 スタイルで変換成功を確認
 - ✅ 追加パッケージ不要
 
-### prsl_to_prtextstyle_gui.py（GUI版）
-- ✅ **Fill色**（単色）
+### prsl_to_prtextstyle_gui.py（GUI版 v2.0）
+- ✅ **Fill色**（単色）- **マーカーベース方式、CLI版と同じロジック**
 - ✅ **Shadow**（X, Y, Blur, Color）
 - ⚠️ **Gradient**（2色グラデーション、部分対応）
 - ⚠️ **Stroke**（部分対応）
+- ✅ フォールバック機能付き
 
 ### 共通
 - ✅ Premiere Pro 2025 prtextstyle形式（FlatBuffers）

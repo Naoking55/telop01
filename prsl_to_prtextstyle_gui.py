@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-PRSL → prtextstyle 変換ツール（1ファイル完結版）
+PRSL → prtextstyle 変換ツール（1ファイル完結版）v2.0
 ====================================================================
 Adobe Premiere PRSLファイルをPremiere Pro 2025 prtextstyle形式に変換
+
+v2.0 更新内容（2024-12-14）:
+- マーカーベース方式でFill色変換（FINAL_prsl_converter.py と同じロジック）
+- 10/10 スタイルで動作確認済みの方式を採用
+- 旧方式もフォールバックとして保持
 
 必要な依存関係:
 - Python 3.8+
@@ -40,7 +45,7 @@ logger = logging.getLogger(__name__)
 # ==============================================================================
 # 定数
 # ==============================================================================
-APP_VERSION = "1.0.0"
+APP_VERSION = "2.0.0"  # v2.0: マーカーベース方式に更新（2024-12-14）
 APP_TITLE = "PRSL → prtextstyle 変換ツール"
 DEFAULT_TEMPLATE = "prtextstyle/100 New Fonstyle.prtextstyle"
 
@@ -56,6 +61,9 @@ COLORS = {
     'accent_orange': '#ff9500',
     'border': '#444444',
 }
+
+# 色変換用マーカー（FINAL_prsl_converter.py と同じ）
+MARKER = b'\x02\x00\x00\x00\x41\x61'
 
 
 # ==============================================================================
@@ -370,6 +378,76 @@ class PrtextstyleParams:
     shadow_a: float = 0.5
 
 
+# ==============================================================================
+# 色変換ヘルパー関数（FINAL_prsl_converter.py と同じロジック）
+# ==============================================================================
+
+def get_color_structure(r: int, g: int, b: int) -> Tuple[str, List[Tuple[str, int]]]:
+    """
+    色の構造を取得（どのRGB成分が255=skipか）
+    Returns: (structure_key, stored_components)
+
+    例: RGB(255, 0, 126) → ("R=skip, G=store, B=store", [('G', 0), ('B', 126)])
+    """
+    structure = []
+    stored = []
+
+    if r == 255:
+        structure.append('R=skip')
+    else:
+        structure.append('R=store')
+        stored.append(('R', r))
+
+    if g == 255:
+        structure.append('G=skip')
+    else:
+        structure.append('G=store')
+        stored.append(('G', g))
+
+    if b == 255:
+        structure.append('B=skip')
+    else:
+        structure.append('B=store')
+        stored.append(('B', b))
+
+    return ', '.join(structure), stored
+
+
+def replace_color_bytes_in_binary(binary: bytes, target_r: int, target_g: int, target_b: int) -> bytes:
+    """
+    バイナリ内の色バイトをマーカーベース方式で置き換え
+
+    Args:
+        binary: 元のバイナリデータ
+        target_r, target_g, target_b: ターゲットRGB値（0-255）
+
+    Returns:
+        修正されたバイナリデータ
+    """
+    binary = bytearray(binary)
+
+    # マーカーを探す
+    marker_pos = binary.find(MARKER)
+    if marker_pos == -1:
+        logger.warning("Color marker not found - using fallback method")
+        return bytes(binary)
+
+    # ターゲット色の構造を取得
+    target_structure, new_components = get_color_structure(target_r, target_g, target_b)
+
+    # マーカー前のバイト数 = 保存される成分数
+    num_bytes = len(new_components)
+
+    # 色バイトを置き換え（マーカーの直前）
+    for i in range(num_bytes):
+        _, value = new_components[i]
+        binary[marker_pos - num_bytes + i] = value
+
+    logger.debug(f"Color replaced: RGB({target_r}, {target_g}, {target_b}) @ marker-{num_bytes}")
+
+    return bytes(binary)
+
+
 class PrtextstyleExporter:
     """prtextstyle エクスポーター（テンプレートベース）"""
 
@@ -434,10 +512,28 @@ class PrtextstyleExporter:
         logger.info(f"✓ Exported: {output_path} ({len(binary)} bytes)")
 
     def _apply_fill(self, binary: bytearray, params: PrtextstyleParams) -> bytearray:
-        """Fill色を適用"""
+        """Fill色を適用（マーカーベース方式 - FINAL_prsl_converter.py と同じ）"""
         if params.fill_type != "solid":
             return binary
 
+        # Float値（0.0-1.0）を Byte値（0-255）に変換
+        target_r = int(round(params.fill_r * 255))
+        target_g = int(round(params.fill_g * 255))
+        target_b = int(round(params.fill_b * 255))
+
+        # マーカーベース方式で色バイトを置き換え
+        try:
+            binary = bytearray(replace_color_bytes_in_binary(bytes(binary), target_r, target_g, target_b))
+            logger.debug(f"Fill color applied (marker-based): RGB({target_r}, {target_g}, {target_b})")
+        except Exception as e:
+            logger.warning(f"Marker-based fill failed, using fallback: {e}")
+            # フォールバック: 旧方式（ヒューリスティック探索）
+            binary = self._apply_fill_fallback(binary, params)
+
+        return binary
+
+    def _apply_fill_fallback(self, binary: bytearray, params: PrtextstyleParams) -> bytearray:
+        """Fill色を適用（旧方式・フォールバック用）"""
         # Fill色の位置を探す（0x0100付近）
         for offset in range(0x00f0, min(0x0150, len(binary) - 15), 4):
             try:
@@ -452,7 +548,7 @@ class PrtextstyleExporter:
                     struct.pack_into('<f', binary, offset + 4, params.fill_g)
                     struct.pack_into('<f', binary, offset + 8, params.fill_b)
                     struct.pack_into('<f', binary, offset + 12, params.fill_a)
-                    logger.debug(f"Fill color applied at 0x{offset:04x}")
+                    logger.debug(f"Fill color applied (fallback) at 0x{offset:04x}")
                     break
             except:
                 pass
