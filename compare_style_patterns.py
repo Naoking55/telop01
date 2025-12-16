@@ -1,158 +1,182 @@
 #!/usr/bin/env python3
 """
-スタイルをパターン別に分類して比較
+prtextstyleファイル内の全スタイルを比較分析
+PRSLの色と実際の保存パターンを対比
 """
 
-import xml.etree.ElementTree as ET
+import sys
+import re
 import base64
-import struct
-from collections import defaultdict
 
-def get_all_styles_with_binary(filepath):
-    """全スタイルのバイナリデータを取得"""
-    tree = ET.parse(filepath)
-    root = tree.getroot()
+MARKER = b'\x02\x00\x00\x00\x41\x61'
 
-    styles = []
-    style_items = root.findall('.//StyleProjectItem')
+# PRSLから取得した期待される色（check_prsl_colors.pyの結果）
+EXPECTED_COLORS = [
+    ("Style 1", 0, 114, 255),
+    ("Style 2", 255, 0, 126),
+    ("Style 3", 18, 121, 78),
+    ("Style 4", 255, 174, 0),
+    ("Style 5", 255, 255, 255),
+    ("Style 6", 0, 255, 210),
+    ("Style 7", 255, 108, 0),
+    ("Style 8", 253, 255, 0),
+    ("Style 9", 255, 242, 0),
+    ("Style 10", 255, 244, 162),
+]
 
-    for style_item in style_items:
-        name_elem = style_item.find('.//Name')
-        style_name = name_elem.text if name_elem is not None else "Unknown"
+def get_color_structure(r, g, b):
+    """色構造を判定（どのRGB成分が255=skipか）"""
+    structure = []
+    stored = []
 
-        component_ref_elem = style_item.find('.//Component[@ObjectRef]')
-        if component_ref_elem is None:
+    if r == 255:
+        structure.append('R=skip')
+    else:
+        structure.append('R=store')
+        stored.append(('R', r))
+
+    if g == 255:
+        structure.append('G=skip')
+    else:
+        structure.append('G=store')
+        stored.append(('G', g))
+
+    if b == 255:
+        structure.append('B=skip')
+    else:
+        structure.append('B=store')
+        stored.append(('B', b))
+
+    return ', '.join(structure), stored
+
+def analyze_binary_around_marker(binary, marker_pos, context=10):
+    """マーカー周辺のバイナリを詳細分析"""
+    start = max(0, marker_pos - context)
+    end = min(len(binary), marker_pos + len(MARKER) + context)
+
+    bytes_around = []
+    for i in range(start, end):
+        offset = i - marker_pos
+        byte_val = binary[i]
+        is_marker = marker_pos <= i < marker_pos + len(MARKER)
+
+        bytes_around.append({
+            'offset': offset,
+            'value': byte_val,
+            'is_marker': is_marker
+        })
+
+    return bytes_around
+
+def compare_styles(prtextstyle_file):
+    """全スタイルを比較分析"""
+    print("="*80)
+    print("スタイル間比較分析")
+    print("="*80)
+
+    # ファイル読み込み
+    with open(prtextstyle_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # StartKeyframeValue抽出
+    pattern = r'<StartKeyframeValue Encoding="base64" BinaryHash="[^"]+">([A-Za-z0-9+/=\s]+)</StartKeyframeValue>'
+    matches = re.findall(pattern, content, re.DOTALL)
+
+    print(f"\n検出: {len(matches)} エントリ\n")
+
+    results = []
+
+    for i, b64_text in enumerate(matches):
+        if i >= len(EXPECTED_COLORS):
+            break
+
+        name, exp_r, exp_g, exp_b = EXPECTED_COLORS[i]
+        structure_desc, stored_components = get_color_structure(exp_r, exp_g, exp_b)
+
+        # Base64デコード
+        b64_clean = b64_text.replace('\n', '').replace('\r', '').replace(' ', '').replace('\t', '')
+        binary = base64.b64decode(b64_clean)
+
+        # マーカー検索
+        marker_pos = binary.find(MARKER)
+
+        if marker_pos == -1:
+            print(f"\n[{i+1}] {name}: マーカーなし")
             continue
 
-        component_ref = component_ref_elem.get('ObjectRef')
-        vfc = root.find(f".//VideoFilterComponent[@ObjectID='{component_ref}']")
-        if vfc is None:
-            continue
+        # マーカー周辺を分析
+        around = analyze_binary_around_marker(binary, marker_pos, context=5)
 
-        first_param_ref = vfc.find(".//Param[@Index='0']")
-        if first_param_ref is None:
-            continue
+        # マーカー直前のバイトを取得
+        num_stored = len(stored_components)
+        bytes_before_marker = []
+        for j in range(num_stored):
+            if marker_pos - num_stored + j >= 0:
+                bytes_before_marker.append(binary[marker_pos - num_stored + j])
 
-        param_obj_ref = first_param_ref.get('ObjectRef')
-        arb_param = root.find(f".//ArbVideoComponentParam[@ObjectID='{param_obj_ref}']")
-        if arb_param is None:
-            continue
+        # 期待される保存バイト
+        expected_bytes = [val for _, val in stored_components]
 
-        binary_elem = arb_param.find(".//StartKeyframeValue[@Encoding='base64']")
-        if binary_elem is None or not binary_elem.text:
-            continue
+        # 結果表示
+        print(f"\n{'='*80}")
+        print(f"[{i+1}] {name}")
+        print(f"{'='*80}")
+        print(f"PRSL色:      RGB({exp_r:3d}, {exp_g:3d}, {exp_b:3d})")
+        print(f"色構造:      {structure_desc}")
+        print(f"保存成分数:  {num_stored} バイト")
+        print(f"期待バイト:  {expected_bytes}")
+        print(f"実際バイト:  {bytes_before_marker}")
+        print(f"マーカー位置: {marker_pos}")
 
-        try:
-            binary_data = base64.b64decode(binary_elem.text.strip())
-            styles.append({
-                'name': style_name,
-                'binary': binary_data,
-                'size': len(binary_data)
-            })
-        except:
-            pass
-
-    return styles
-
-def compare_two_binaries(bin1, bin2, name1, name2):
-    """2つのバイナリを比較"""
-    print(f"\n{'='*80}")
-    print(f"比較: {name1} vs {name2}")
-    print(f"サイズ: {len(bin1)} bytes vs {len(bin2)} bytes (差分: {abs(len(bin1) - len(bin2))} bytes)")
-    print(f"{'='*80}\n")
-
-    # 差分箇所を検出
-    min_len = min(len(bin1), len(bin2))
-    differences = []
-
-    for i in range(min_len):
-        if bin1[i] != bin2[i]:
-            differences.append(i)
-
-    print(f"差分バイト数: {len(differences)} / {min_len} ({len(differences)*100//min_len}%)")
-
-    # 差分の多い領域を表示
-    if differences:
-        # 差分を連続した範囲にグループ化
-        ranges = []
-        start = differences[0]
-        end = differences[0]
-
-        for diff in differences[1:]:
-            if diff == end + 1:
-                end = diff
-            else:
-                ranges.append((start, end))
-                start = diff
-                end = diff
-        ranges.append((start, end))
-
-        print(f"\n差分領域 (最初の10個):")
-        for start, end in ranges[:10]:
-            length = end - start + 1
-            print(f"  0x{start:04x} - 0x{end:04x} ({length} bytes)")
-
-            # その領域のデータを表示
-            print(f"    {name1}: {bin1[start:min(start+16, end+1)].hex()}")
-            print(f"    {name2}: {bin2[start:min(start+16, end+1)].hex()}")
-
-    # サイズ差がある場合
-    if len(bin1) != len(bin2):
-        print(f"\nサイズ差:")
-        if len(bin1) > len(bin2):
-            extra_start = len(bin2)
-            extra_data = bin1[extra_start:]
-            print(f"  {name1} の追加データ (0x{extra_start:04x}から{len(extra_data)}bytes):")
-            print(f"    {extra_data[:32].hex()}...")
+        # 一致確認
+        if bytes_before_marker == expected_bytes:
+            print(f"結果:        ✓ 完全一致")
         else:
-            extra_start = len(bin1)
-            extra_data = bin2[extra_start:]
-            print(f"  {name2} の追加データ (0x{extra_start:04x}から{len(extra_data)}bytes):")
-            print(f"    {extra_data[:32].hex()}...")
+            print(f"結果:        ✗ 不一致")
 
-def main():
-    print("='*80}")
-    print("スタイルパターン比較分析")
-    print("='*80}")
+        # マーカー周辺の詳細
+        print(f"\nマーカー周辺のバイト:")
+        for b in around:
+            marker_flag = "←MARKER" if b['is_marker'] else ""
+            offset_str = f"[{b['offset']:+3d}]"
+            print(f"  {offset_str} 0x{b['value']:02x} ({b['value']:3d}) {marker_flag}")
 
-    # 100 Fonstyleファイルから取得
-    styles_100 = get_all_styles_with_binary("prtextstyle/100 New Fonstyle.prtextstyle")
-    print(f"\n100 Fonstyle: {len(styles_100)} スタイル取得")
+        results.append({
+            'index': i + 1,
+            'name': name,
+            'expected_rgb': (exp_r, exp_g, exp_b),
+            'structure': structure_desc,
+            'num_stored': num_stored,
+            'expected_bytes': expected_bytes,
+            'actual_bytes': bytes_before_marker,
+            'match': bytes_before_marker == expected_bytes,
+            'marker_pos': marker_pos
+        })
 
-    # サイズでソート
-    styles_100.sort(key=lambda x: x['size'])
-
-    # サイズ分布を表示
-    print(f"\nサイズ範囲: {styles_100[0]['size']} - {styles_100[-1]['size']} bytes")
-    print(f"\nサイズ別サンプル:")
-    print(f"  最小: {styles_100[0]['name']} ({styles_100[0]['size']} bytes)")
-    print(f"  中央: {styles_100[len(styles_100)//2]['name']} ({styles_100[len(styles_100)//2]['size']} bytes)")
-    print(f"  最大: {styles_100[-1]['name']} ({styles_100[-1]['size']} bytes)")
-
-    # 最小と最大を比較
-    compare_two_binaries(
-        styles_100[0]['binary'],
-        styles_100[-1]['binary'],
-        styles_100[0]['name'],
-        styles_100[-1]['name']
-    )
-
-    # 似たサイズのものを比較（連続した2つ）
-    print(f"\n\n{'='*80}")
-    print("類似サイズの比較（Fontstyle_01 vs Fontstyle_02）")
+    # サマリー
+    print(f"\n{'='*80}")
+    print("サマリー")
     print(f"{'='*80}")
 
-    # Fontstyle_01とFontstyle_02を探す
-    style_01 = next((s for s in styles_100 if s['name'] == 'Fontstyle_01'), None)
-    style_02 = next((s for s in styles_100 if s['name'] == 'Fontstyle_02'), None)
+    match_count = sum(1 for r in results if r['match'])
+    print(f"\n一致数: {match_count}/{len(results)}")
 
-    if style_01 and style_02:
-        compare_two_binaries(
-            style_01['binary'],
-            style_02['binary'],
-            style_01['name'],
-            style_02['name']
-        )
+    # 構造別グループ化
+    from collections import defaultdict
+    by_structure = defaultdict(list)
+    for r in results:
+        by_structure[r['structure']].append(r)
+
+    print(f"\n色構造別:")
+    for struct, items in sorted(by_structure.items()):
+        print(f"\n  {struct}:")
+        for item in items:
+            match_str = "✓" if item['match'] else "✗"
+            print(f"    [{item['index']}] {item['name']:20s} {match_str}")
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print("使い方: python3 compare_style_patterns.py <prtextstyle_file>")
+        sys.exit(1)
+
+    compare_styles(sys.argv[1])
