@@ -53,9 +53,9 @@ def parse_prsl(prsl_path: str):
                 g_float = float(green_elem.text)
                 b_float = float(blue_elem.text)
 
-                r = int(round(r_float * 255))
-                g = int(round(g_float * 255))
-                b = int(round(b_float * 255))
+                r = int(r_float * 255)
+                g = int(g_float * 255)
+                b = int(b_float * 255)
 
                 fill = Fill(r, g, b)
             else:

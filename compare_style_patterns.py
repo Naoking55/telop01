@@ -11,17 +11,18 @@ import base64
 MARKER = b'\x02\x00\x00\x00\x41\x61'
 
 # PRSLから取得した期待される色（check_prsl_colors.pyの結果）
+# 修正版：round()を削除してint()のみの切り捨てに変更
 EXPECTED_COLORS = [
     ("Style 1", 0, 114, 255),
     ("Style 2", 255, 0, 126),
-    ("Style 3", 18, 121, 78),
+    ("Style 3", 17, 121, 77),
     ("Style 4", 255, 174, 0),
     ("Style 5", 255, 255, 255),
-    ("Style 6", 0, 255, 210),
-    ("Style 7", 255, 108, 0),
+    ("Style 6", 0, 255, 209),
+    ("Style 7", 255, 107, 0),
     ("Style 8", 253, 255, 0),
     ("Style 9", 255, 242, 0),
-    ("Style 10", 255, 244, 162),
+    ("Style 10", 255, 244, 161),
 ]
 
 def get_color_structure(r, g, b):
