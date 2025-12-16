@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-PRSL → prtextstyle 変換ツール（1ファイル完結版）v2.0
+PRSL → prtextstyle 変換ツール（1ファイル完結版）v2.1
 ====================================================================
 Adobe Premiere PRSLファイルをPremiere Pro 2025 prtextstyle形式に変換
 
-v2.0 更新内容（2024-12-14）:
+v2.1 更新内容（2024-12-14）:
+★ CLI版と完全に同じ保存方式を採用（1ファイルに全スタイル）
+★ XML構造を完全保持（100KB以上の正しいファイルを生成）
+★ デフォルトテンプレートを手動変換済みファイルに変更
+
+v2.0 更新内容:
 - マーカーベース方式でFill色変換（FINAL_prsl_converter.py と同じロジック）
 - 10/10 スタイルで動作確認済みの方式を採用
 - 旧方式もフォールバックとして保持
@@ -16,10 +21,15 @@ v2.0 更新内容（2024-12-14）:
 
 使い方:
     python3 prsl_to_prtextstyle_gui.py
+
+注意:
+    「すべて書き出し」ボタンで1つのprtextstyleファイルに全スタイルをまとめて出力します。
+    テンプレートファイル（手動変換済み）が必要です。
 """
 
 import os
 import sys
+import re
 import base64
 import struct
 import math
@@ -45,9 +55,9 @@ logger = logging.getLogger(__name__)
 # ==============================================================================
 # 定数
 # ==============================================================================
-APP_VERSION = "2.0.0"  # v2.0: マーカーベース方式に更新（2024-12-14）
+APP_VERSION = "2.1.0"  # v2.1: CLI版と同じ保存方式に修正（2024-12-14）
 APP_TITLE = "PRSL → prtextstyle 変換ツール"
-DEFAULT_TEMPLATE = "prtextstyle/100 New Fonstyle.prtextstyle"
+DEFAULT_TEMPLATE = "/tmp/10styles.prtextstyle"  # 手動変換済みテンプレート
 
 # カラースキーム
 COLORS = {
@@ -887,36 +897,116 @@ class ConverterGUI:
             logger.error(f"Export error: {e}")
 
     def export_all(self):
-        """すべてのスタイルを一括書き出し"""
+        """すべてのスタイルを一括書き出し（CLI版と同じ方式）"""
         if not self.styles:
             messagebox.showwarning("警告", "スタイルが読み込まれていません")
             return
 
-        directory = filedialog.askdirectory(title="保存先フォルダを選択")
-        if not directory:
+        # 保存先ファイルを選択
+        filepath = filedialog.asksaveasfilename(
+            title="保存先ファイルを選択",
+            defaultextension=".prtextstyle",
+            filetypes=[("prtextstyle files", "*.prtextstyle"), ("All files", "*.*")]
+        )
+        if not filepath:
+            return
+
+        # テンプレートファイルを選択
+        template_path = filedialog.askopenfilename(
+            title="テンプレートファイルを選択（手動変換済みprtextstyle）",
+            initialfile="/tmp/10styles.prtextstyle",
+            filetypes=[("prtextstyle files", "*.prtextstyle"), ("All files", "*.*")]
+        )
+        if not template_path:
+            messagebox.showwarning("警告", "テンプレートが必要です")
             return
 
         try:
-            exporter = PrtextstyleExporter()
-            success_count = 0
+            # CLI版と同じロジックで変換
+            success_count = self._batch_export_cli_style(filepath, template_path)
 
-            for style in self.styles:
-                filename = f"{style.name.replace('/', '_').replace(' ', '_')}.prtextstyle"
-                filepath = os.path.join(directory, filename)
-
-                params = style_to_params(style)
-                exporter.export(params, style.name, filepath)
-                success_count += 1
-
-            messagebox.showinfo("成功", f"{success_count}個のスタイルをエクスポートしました")
+            messagebox.showinfo("成功", f"{success_count}/{len(self.styles)} スタイルを変換しました\n\n出力: {filepath}")
             self.status_label.config(
-                text=f"✓ {success_count}個のスタイルをエクスポート完了",
+                text=f"✓ {success_count}/{len(self.styles)} スタイルをエクスポート完了",
                 fg=COLORS['accent_green']
             )
 
         except Exception as e:
-            messagebox.showerror("エラー", f"エクスポートに失敗しました:\n{e}")
-            logger.error(f"Export error: {e}")
+            messagebox.showerror("エラー", f"エクスポートに失敗しました:\n{e}\n\n{traceback.format_exc()}")
+            logger.error(f"Export error: {e}\n{traceback.format_exc()}")
+
+    def _batch_export_cli_style(self, output_path: str, template_path: str) -> int:
+        """CLI版と同じ方式でバッチエクスポート（FINAL_prsl_converter.py のロジック）"""
+
+        # テンプレートファイル全体を読み込み
+        with open(template_path, 'r', encoding='utf-8') as f:
+            template_content = f.read()
+
+        # StartKeyframeValue エントリを抽出
+        pattern = r'(<StartKeyframeValue Encoding="base64" BinaryHash="[^"]+">)([A-Za-z0-9+/=\s]+)(</StartKeyframeValue>)'
+        matches = list(re.finditer(pattern, template_content, re.DOTALL))
+
+        if len(matches) < len(self.styles):
+            raise ValueError(f"テンプレートのスタイル数({len(matches)})が不足しています。{len(self.styles)}個必要です。")
+
+        # テンプレートのバイナリを取得
+        exporter = PrtextstyleExporter(template_path)
+        template_binaries = []
+        for match in matches:
+            b64 = match.group(2).replace('\n', '').replace('\r', '').replace(' ', '').replace('\t', '')
+            binary = base64.b64decode(b64)
+            template_binaries.append(binary)
+
+        # 各スタイルを変換
+        conversions = []
+        success_count = 0
+
+        for i, style in enumerate(self.styles):
+            r, g, b = style.fill.r, style.fill.g, style.fill.b
+
+            logger.info(f"変換中: {style.name} - RGB({r}, {g}, {b})")
+
+            # 色構造を判定
+            target_structure, new_stored = get_color_structure(r, g, b)
+
+            # テンプレートとして対応するインデックスのバイナリを使用
+            if i < len(template_binaries):
+                template_binary = template_binaries[i]
+
+                # 色バイトを置き換え
+                try:
+                    modified_binary = replace_color_bytes_in_binary(template_binary, r, g, b)
+                    new_b64 = base64.b64encode(modified_binary).decode('ascii')
+
+                    conversions.append(new_b64)
+                    success_count += 1
+                    logger.info(f"  ✓ 変換成功")
+
+                except Exception as e:
+                    logger.warning(f"  ✗ エラー: {e}")
+                    conversions.append(None)
+            else:
+                conversions.append(None)
+
+        # ファイル更新（後ろから順に置換）
+        new_content = template_content
+        for i in range(len(conversions) - 1, -1, -1):
+            if conversions[i] is not None and i < len(matches):
+                match = matches[i]
+                new_b64 = conversions[i]
+
+                new_content = (
+                    new_content[:match.start(2)] +
+                    new_b64 +
+                    new_content[match.end(2):]
+                )
+
+        # 保存
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+
+        logger.info(f"✓ ファイル保存完了: {output_path}")
+        return success_count
 
     def run(self):
         """GUIを起動"""
