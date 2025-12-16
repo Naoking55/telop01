@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-完全スタンドアロン版 PRSL→prtextstyle 変換ツール
-依存関係: Python 3.8+ のみ（標準ライブラリのみ使用）
+完全スタンドアロン版 PRSL→prtextstyle 変換ツール v2
+Float値形式のPRSLに対応
 """
 
 import re
@@ -27,7 +27,7 @@ class Style:
     fill: Fill
 
 # ============================================================================
-# PRSL解析（インライン実装）
+# PRSL解析（Float値形式対応）
 # ============================================================================
 
 def parse_prsl(prsl_path: str):
@@ -139,7 +139,7 @@ def convert(log_func):
         log_func(msg)
 
     log("="*60)
-    log("スタンドアロン版 PRSL→prtextstyle 変換ツール")
+    log("スタンドアロン版 v2 (Float値対応)")
     log("="*60)
 
     # PRSLファイル選択
@@ -182,6 +182,13 @@ def convert(log_func):
         styles = parse_prsl(prsl_file)
         log(f"  ✓ {len(styles)} スタイル検出")
 
+        # 色を表示
+        log(f"\n  検出された色:")
+        for i, style in enumerate(styles[:3], 1):  # 最初の3つを表示
+            log(f"    {i}. {style.name}: RGB({style.fill.r}, {style.fill.g}, {style.fill.b})")
+        if len(styles) > 3:
+            log(f"    ... (残り{len(styles)-3}個)")
+
         # テンプレート読み込み
         log(f"\n[5] テンプレート読み込み中...")
         with open(template_file, 'r', encoding='utf-8') as f:
@@ -204,7 +211,8 @@ def convert(log_func):
             b64 = match.group(2).replace('\n', '').replace('\r', '').replace(' ', '').replace('\t', '')
             binary = base64.b64decode(b64)
             template_binaries.append(binary)
-            log(f"  Template {i+1}: {len(binary)} bytes")
+
+        log(f"  ✓ {len(template_binaries)} バイナリ")
 
         # 変換処理
         log(f"\n[8] 変換処理:")
@@ -298,7 +306,7 @@ def convert(log_func):
 def main():
     """メイン関数"""
     root = tk.Tk()
-    root.title("PRSL→prtextstyle 変換ツール (スタンドアロン版)")
+    root.title("PRSL→prtextstyle 変換ツール v2 (Float対応)")
     root.geometry("800x600")
 
     # ログ表示エリア
@@ -343,6 +351,7 @@ def main():
 
     # 説明
     info_text = (
+        "v2: Float値形式のPRSLに対応\n"
         "使い方:\n"
         "1. 「変換開始」ボタンをクリック\n"
         "2. PRSLファイルを選択\n"
