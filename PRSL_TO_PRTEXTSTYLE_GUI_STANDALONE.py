@@ -351,55 +351,165 @@ def convert_style(style: Style, template_binary: bytes) -> bytes:
     return bytes(binary)
 
 def create_prtextstyle_xml(styles: List[Style], binaries: List[bytes], output_path: str):
-    """prtextstyleXMLファイルを生成"""
-    # XMLルート
-    root = ET.Element('PremiereData', Version='3')
+    """prtextstyleXMLファイルを生成（テンプレートベース）"""
+    import uuid
 
-    # StyleProjectItem要素を作成
-    for i, (style, binary) in enumerate(zip(styles, binaries)):
-        item = ET.SubElement(root, 'StyleProjectItem',
-                           Class='StyleProjectItem',
-                           Version='1',
-                           ObjectID=f'style_{i+1}')
+    # テンプレートファイルパスを推定
+    # 同じディレクトリにあると仮定
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+    template_file = os.path.join(script_dir, '10styles', '10styles.prtextstyle')
 
-        # Name
-        name_elem = ET.SubElement(item, 'Name')
-        name_elem.text = f'{i+1:03d}'
+    # テンプレートファイルが存在しない場合は、簡易フォーマットで出力
+    if not os.path.exists(template_file):
+        # 簡易XMLフォーマット（Project wrapperなし）
+        root = ET.Element('PremiereData', Version='3')
 
-        # Component参照
-        component = ET.SubElement(item, 'Component',
-                                ObjectRef=f'component_{i+1}',
-                                Class='VideoFilterComponent')
+        for i, (style, binary) in enumerate(zip(styles, binaries)):
+            item = ET.SubElement(root, 'StyleProjectItem',
+                               Class='StyleProjectItem',
+                               Version='1',
+                               ObjectID=f'style_{i+1}')
+            name_elem = ET.SubElement(item, 'Name')
+            name_elem.text = f'{i+1:03d}'
+            component = ET.SubElement(item, 'Component',
+                                    ObjectRef=f'component_{i+1}',
+                                    Class='VideoFilterComponent')
 
-    # VideoFilterComponent要素を作成
-    for i, binary in enumerate(binaries):
-        vfc = ET.SubElement(root, 'VideoFilterComponent',
-                          Class='VideoFilterComponent',
-                          Version='10',
-                          ObjectID=f'component_{i+1}')
+        for i in range(len(binaries)):
+            vfc = ET.SubElement(root, 'VideoFilterComponent',
+                              Class='VideoFilterComponent',
+                              Version='10',
+                              ObjectID=f'component_{i+1}')
+            param = ET.SubElement(vfc, 'Param', Index='0', ObjectRef=f'param_{i+1}')
 
-        # Param参照
-        param = ET.SubElement(vfc, 'Param',
-                            Index='0',
-                            ObjectRef=f'param_{i+1}')
+        for i, binary in enumerate(binaries):
+            arb = ET.SubElement(root, 'ArbVideoComponentParam',
+                              Class='ArbVideoComponentParam',
+                              Version='3',
+                              ObjectID=f'param_{i+1}')
+            value = ET.SubElement(arb, 'StartKeyframeValue',
+                                Encoding='base64',
+                                BinaryHash='00000000')
+            value.text = base64.b64encode(binary).decode('ascii')
 
-    # ArbVideoComponentParam要素を作成
-    for i, binary in enumerate(binaries):
-        arb = ET.SubElement(root, 'ArbVideoComponentParam',
-                          Class='ArbVideoComponentParam',
-                          Version='3',
-                          ObjectID=f'param_{i+1}')
+        tree = ET.ElementTree(root)
+        ET.indent(tree, space='  ')
+        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        return
 
-        # StartKeyframeValue (Base64エンコード)
-        value = ET.SubElement(arb, 'StartKeyframeValue',
-                            Encoding='base64',
-                            BinaryHash='00000000')
-        value.text = base64.b64encode(binary).decode('ascii')
+    # テンプレートを読み込み
+    with open(template_file, 'r', encoding='utf-8') as f:
+        template_content = f.read()
 
-    # ファイル保存
-    tree = ET.ElementTree(root)
-    ET.indent(tree, space='  ')
-    tree.write(output_path, encoding='utf-8', xml_declaration=True)
+    # UUIDを生成
+    style_uuids = [str(uuid.uuid4()) for _ in styles]
+
+    # テンプレート内の既存StyleProjectItemを抽出してパターンを学習
+    # 代わりに、テンプレートの構造を保ちつつ、必要な要素だけを置換する
+
+    # 正規表現で全てのStyleProjectItem, VideoFilterComponent, ArbVideoComponentParamを削除
+    import re
+
+    # StyleProjectItemを削除
+    template_content = re.sub(
+        r'\t<StyleProjectItem.*?</StyleProjectItem>\n',
+        '',
+        template_content,
+        flags=re.DOTALL
+    )
+
+    # VideoFilterComponentを削除（MatchNameがAE.ADBE Textのもの）
+    template_content = re.sub(
+        r'\t<VideoFilterComponent.*?<MatchName>AE\.ADBE Text</MatchName>.*?</VideoFilterComponent>\n',
+        '',
+        template_content,
+        flags=re.DOTALL
+    )
+
+    # ArbVideoComponentParamを削除（ソーステキスト関連）
+    template_content = re.sub(
+        r'\t<ArbVideoComponentParam.*?<Name>ソーステキスト</Name>.*?</ArbVideoComponentParam>\n',
+        '',
+        template_content,
+        flags=re.DOTALL
+    )
+
+    # RootProjectItemのItems listを更新
+    items_xml = '\n'.join([f'\t\t\t\t<Item Index="{i}" ObjectURef="{uuid}"/>' for i, uuid in enumerate(style_uuids)])
+    template_content = re.sub(
+        r'<Items Version="1">.*?</Items>',
+        f'<Items Version="1">\n{items_xml}\n\t\t\t</Items>',
+        template_content,
+        flags=re.DOTALL
+    )
+
+    # 新しいStyleProjectItem, VideoFilterComponent, ArbVideoComponentParamを挿入
+    # WorkspaceSettingsの後に挿入
+    insert_pos = template_content.find('</WorkspaceSettings>') + len('</WorkspaceSettings>\n')
+
+    new_elements = []
+    comp_id_start = 1000  # 既存のIDと被らないように大きな番号から開始
+
+    for i, (uuid_str, style, binary) in enumerate(zip(style_uuids, styles, binaries)):
+        comp_id = comp_id_start + i
+        param_id = comp_id_start + 100 + i
+
+        # StyleProjectItem
+        style_xml = f'''\t<StyleProjectItem ObjectUID="{uuid_str}" ClassID="31673410-6b9a-420b-990a-fdfe31ef94f3" Version="1">
+\t\t<ProjectItem Version="1">
+\t\t\t<Node Version="1">
+\t\t\t\t<Properties Version="1">
+\t\t\t\t\t<Column.PropertyText.Label>BE.Prefs.LabelColors.Unknown</Column.PropertyText.Label>
+\t\t\t\t</Properties>
+\t\t\t</Node>
+\t\t\t<Name>{style.name}</Name>
+\t\t</ProjectItem>
+\t\t<Component ObjectRef="{comp_id}"/>
+\t</StyleProjectItem>
+'''
+        new_elements.append(style_xml)
+
+    # VideoFilterComponentとArbVideoComponentParamを挿入
+    for i, (uuid_str, style, binary) in enumerate(zip(style_uuids, styles, binaries)):
+        comp_id = comp_id_start + i
+        param_id = comp_id_start + 100 + i
+
+        vfc_xml = f'''\t<VideoFilterComponent ObjectID="{comp_id}" ClassID="d10da199-beea-4dd1-b941-ed3a78766d50" Version="9">
+\t\t<Component Version="6">
+\t\t\t<Params Version="1">
+\t\t\t\t<Param Index="0" ObjectRef="{param_id}"/>
+\t\t\t</Params>
+\t\t\t<ID>0</ID>
+\t\t\t<Bypass>false</Bypass>
+\t\t\t<DisplayName>テキスト</DisplayName>
+\t\t\t<Intrinsic>false</Intrinsic>
+\t\t\t<ArchivedType>0</ArchivedType>
+\t\t</Component>
+\t\t<MatchName>AE.ADBE Text</MatchName>
+\t\t<VideoFilterType>2</VideoFilterType>
+\t</VideoFilterComponent>
+'''
+        new_elements.append(vfc_xml)
+
+        b64_data = base64.b64encode(binary).decode('ascii')
+        arb_xml = f'''\t<ArbVideoComponentParam ObjectID="{param_id}" ClassID="313e54d4-6903-49ad-b0bf-8262cdd10f4e" Version="2">
+\t\t<IsTimeVarying>false</IsTimeVarying>
+\t\t<ParameterControlType>9</ParameterControlType>
+\t\t<ParameterID>1</ParameterID>
+\t\t<Name>ソーステキスト</Name>
+\t\t<StartKeyframePosition>-91445760000000000</StartKeyframePosition>
+\t\t<StartKeyframeValue Encoding="base64" BinaryHash="00000000">{b64_data}</StartKeyframeValue>
+\t</ArbVideoComponentParam>
+'''
+        new_elements.append(arb_xml)
+
+    # 挿入
+    template_content = template_content[:insert_pos] + ''.join(new_elements) + template_content[insert_pos:]
+
+    # ファイルに保存
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(template_content)
 
 # ============================================================================
 # GUI
