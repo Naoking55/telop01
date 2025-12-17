@@ -355,8 +355,8 @@ def create_prtextstyle_xml(styles: List[Style], binaries: List[bytes], output_pa
     # XMLルート
     root = ET.Element('PremiereData', Version='3')
 
+    # StyleProjectItem要素を作成
     for i, (style, binary) in enumerate(zip(styles, binaries)):
-        # StyleProjectItem
         item = ET.SubElement(root, 'StyleProjectItem',
                            Class='StyleProjectItem',
                            Version='1',
@@ -364,53 +364,42 @@ def create_prtextstyle_xml(styles: List[Style], binaries: List[bytes], output_pa
 
         # Name
         name_elem = ET.SubElement(item, 'Name')
-        name_elem.text = style.name
+        name_elem.text = f'{i+1:03d}'
 
-        # MasterClipID
-        clip_id = ET.SubElement(item, 'MasterClipID')
-        clip_id.text = '00000000-0000-0000-0000-000000000000'
+        # Component参照
+        component = ET.SubElement(item, 'Component',
+                                ObjectRef=f'component_{i+1}',
+                                Class='VideoFilterComponent')
 
-        # ArbVideoComponentParam
-        arb_param = ET.SubElement(item, 'ArbVideoComponentParam',
-                                 Class='ArbVideoComponentParam',
-                                 Version='2')
+    # VideoFilterComponent要素を作成
+    for i, binary in enumerate(binaries):
+        vfc = ET.SubElement(root, 'VideoFilterComponent',
+                          Class='VideoFilterComponent',
+                          Version='10',
+                          ObjectID=f'component_{i+1}')
 
-        # Name (Source Text)
-        name2 = ET.SubElement(arb_param, 'Name')
-        name2.text = 'Source Text'
+        # Param参照
+        param = ET.SubElement(vfc, 'Param',
+                            Index='0',
+                            ObjectRef=f'param_{i+1}')
 
-        # IsTimeVarying
-        is_time = ET.SubElement(arb_param, 'IsTimeVarying')
-        is_time.text = 'false'
-
-        # ParameterControlType
-        ctrl_type = ET.SubElement(arb_param, 'ParameterControlType')
-        ctrl_type.text = '2'
-
-        # StartKeyframe
-        start_key = ET.SubElement(arb_param, 'StartKeyframe',
-                                 Class='KeyframeProperty',
-                                 Version='5')
+    # ArbVideoComponentParam要素を作成
+    for i, binary in enumerate(binaries):
+        arb = ET.SubElement(root, 'ArbVideoComponentParam',
+                          Class='ArbVideoComponentParam',
+                          Version='3',
+                          ObjectID=f'param_{i+1}')
 
         # StartKeyframeValue (Base64エンコード)
-        b64_data = base64.b64encode(binary).decode('ascii')
-        # 適切に改行を挿入
-        b64_lines = [b64_data[j:j+76] for j in range(0, len(b64_data), 76)]
-        b64_formatted = '\n\t\t\t\t\t'.join(b64_lines)
+        value = ET.SubElement(arb, 'StartKeyframeValue',
+                            Encoding='base64',
+                            BinaryHash='00000000')
+        value.text = base64.b64encode(binary).decode('ascii')
 
-        start_value = ET.SubElement(start_key, 'StartKeyframeValue',
-                                   Encoding='base64',
-                                   BinaryHash='00000000000000000000000000000000')
-        start_value.text = '\n\t\t\t\t\t' + b64_formatted + '\n\t\t\t\t'
-
-    # XML整形して保存
+    # ファイル保存
     tree = ET.ElementTree(root)
-    ET.indent(tree, space='\t', level=0)
-
-    with open(output_path, 'wb') as f:
-        f.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
-        f.write(b'<!DOCTYPE PremiereData>\n')
-        tree.write(f, encoding='UTF-8', xml_declaration=False)
+    ET.indent(tree, space='  ')
+    tree.write(output_path, encoding='utf-8', xml_declaration=True)
 
 # ============================================================================
 # GUI
