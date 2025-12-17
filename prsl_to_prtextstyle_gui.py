@@ -526,10 +526,10 @@ class PrtextstyleExporter:
         if params.fill_type != "solid":
             return binary
 
-        # Float値（0.0-1.0）を Byte値（0-255）に変換
-        target_r = int(round(params.fill_r * 255))
-        target_g = int(round(params.fill_g * 255))
-        target_b = int(round(params.fill_b * 255))
+        # Float値（0.0-1.0）を Byte値（0-255）に変換（切り捨て）
+        target_r = int(params.fill_r * 255)
+        target_g = int(params.fill_g * 255)
+        target_b = int(params.fill_b * 255)
 
         # マーカーベース方式で色バイトを置き換え
         try:
