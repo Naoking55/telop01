@@ -28,11 +28,25 @@ SHADOW_BLUR_OFFSET = 0x009c
 BASE_TEMPLATE_520 = None  # 後で実装
 
 @dataclass
-class Fill:
+class GradientStop:
+    """グラデーションストップ"""
     r: int
     g: int
     b: int
     a: int = 255
+
+@dataclass
+class Fill:
+    """塗り（単色またはグラデーション）"""
+    is_gradient: bool = False
+    # 単色用
+    r: int = 255
+    g: int = 255
+    b: int = 255
+    a: int = 255
+    # グラデーション用（4色グラデーション）
+    top_left: Optional['GradientStop'] = None
+    bottom_right: Optional['GradientStop'] = None
 
 @dataclass
 class Shadow:
@@ -62,21 +76,51 @@ def parse_prsl(prsl_path: str) -> List[Style]:
         name = styleblock.get('name', 'Unknown')
 
         # Fill解析
-        fill = Fill(r=255, g=255, b=255, a=255)
+        fill = Fill()
         style_data = styleblock.find('style_data')
         if style_data:
-            solid = style_data.find('.//solid_colour/all')
-            if solid:
-                def get_color(elem_name):
-                    e = solid.find(elem_name)
-                    return int(float(e.text) * 255) if e is not None and e.text else 255
+            # 塗りタイプを確認
+            colouring = style_data.find('.//face/shader/colouring')
+            fill_type = 5  # デフォルトは単色
+            if colouring:
+                fill_type_elem = colouring.find('type')
+                if fill_type_elem is not None:
+                    fill_type = int(fill_type_elem.text.strip())
 
-                fill = Fill(
-                    r=get_color('red'),
-                    g=get_color('green'),
-                    b=get_color('blue'),
-                    a=get_color('alpha')
-                )
+            if fill_type == 1:  # 4色グラデーション
+                four_ramp = colouring.find('four_colour_ramp')
+                if four_ramp:
+                    def get_gradient_color(elem):
+                        if elem is not None:
+                            r = int(float(elem.find('red').text) * 255)
+                            g = int(float(elem.find('green').text) * 255)
+                            b = int(float(elem.find('blue').text) * 255)
+                            a = int(float(elem.find('alpha').text) * 255) if elem.find('alpha') is not None else 255
+                            return GradientStop(r=r, g=g, b=b, a=a)
+                        return None
+
+                    top_left = get_gradient_color(four_ramp.find('top_left'))
+                    bottom_right = get_gradient_color(four_ramp.find('bottom_right'))
+
+                    fill = Fill(
+                        is_gradient=True,
+                        top_left=top_left,
+                        bottom_right=bottom_right
+                    )
+            else:  # 単色
+                solid = style_data.find('.//solid_colour/all')
+                if solid:
+                    def get_color(elem_name):
+                        e = solid.find(elem_name)
+                        return int(float(e.text) * 255) if e is not None and e.text else 255
+
+                    fill = Fill(
+                        is_gradient=False,
+                        r=get_color('red'),
+                        g=get_color('green'),
+                        b=get_color('blue'),
+                        a=get_color('alpha')
+                    )
 
             # Shadow解析
             shadow = Shadow(enabled=False)
@@ -200,13 +244,70 @@ def apply_shadow_color(binary: bytearray, shadow: Shadow) -> bytearray:
 
     return binary
 
+def apply_gradient_colors(binary: bytearray, fill: Fill) -> bytearray:
+    """グラデーション色を適用
+
+    RGBA Float形式（16バイト）:
+    [R float 4B][G float 4B][B float 4B][A float 4B]
+
+    0x0190-0x0200付近のRGBA floatブロックを探して書き換える
+    """
+    if not fill.is_gradient or not fill.top_left or not fill.bottom_right:
+        return binary
+
+    # RGBA float値に変換
+    def rgb_to_rgba_floats(stop: GradientStop):
+        """RGB(0-255) → RGBA floats(0.0-1.0)のバイト列"""
+        r_float = stop.r / 255.0
+        g_float = stop.g / 255.0
+        b_float = stop.b / 255.0
+        a_float = stop.a / 255.0
+
+        return struct.pack('<ffff', r_float, g_float, b_float, a_float)
+
+    # 開始色と終了色のRGBA floatバイト列
+    start_rgba = rgb_to_rgba_floats(fill.top_left)
+    end_rgba = rgb_to_rgba_floats(fill.bottom_right)
+
+    # グラデーション領域を探索（0x0190-0x0200付近）
+    search_start = 0x0190
+    search_end = min(len(binary), 0x0220)
+
+    # 最初の16バイト境界でRGBA floatパターンを探す
+    found_count = 0
+    for offset in range(search_start, search_end - 15, 4):
+        # 既存のRGBA float候補を確認（すべて0.0-1.0範囲のfloat値）
+        try:
+            vals = struct.unpack('<ffff', binary[offset:offset+16])
+            if all(0.0 <= v <= 1.0 for v in vals):
+                # 見つかった順に開始色、終了色を書き込み
+                if found_count == 0:
+                    # 最初=開始色（top_left）
+                    binary[offset:offset+16] = start_rgba
+                    found_count += 1
+                elif found_count == 1:
+                    # 2番目=終了色（bottom_right）
+                    binary[offset:offset+16] = end_rgba
+                    found_count += 1
+                    break  # 2色とも更新したら終了
+        except:
+            continue
+
+    return binary
+
 def convert_style(style: Style, template_binary: bytes) -> bytes:
     """スタイルを変換"""
     # テンプレートをコピー
     binary = bytearray(template_binary)
 
     # パラメータを適用
-    binary = apply_fill_color(binary, style.fill)
+    if style.fill.is_gradient:
+        # グラデーション
+        binary = apply_gradient_colors(binary, style.fill)
+    else:
+        # 単色
+        binary = apply_fill_color(binary, style.fill)
+
     binary = apply_shadow_blur(binary, style.shadow)
     binary = apply_shadow_color(binary, style.shadow)
 
@@ -214,7 +315,6 @@ def convert_style(style: Style, template_binary: bytes) -> bytes:
     # - apply_shadow_offset(binary, style.shadow) # 距離・角度（位置が可変で不安定）
     # - apply_shadow_opacity(binary, style.shadow) # 不透明度（位置が可変で不安定）
     # - apply_edge(binary, style.edge)
-    # - apply_gradient(binary, style.fill)
 
     return bytes(binary)
 
@@ -302,7 +402,15 @@ def convert_prsl_to_prtextstyle(prsl_path: str, output_path: str, template_path:
 
     for i, style in enumerate(styles):
         print(f"\n  スタイル {i+1}: {style.name}")
-        print(f"    塗り: RGB({style.fill.r}, {style.fill.g}, {style.fill.b})")
+
+        if style.fill.is_gradient:
+            if style.fill.top_left and style.fill.bottom_right:
+                print(f"    塗り: グラデーション")
+                print(f"      開始: RGB({style.fill.top_left.r}, {style.fill.top_left.g}, {style.fill.top_left.b})")
+                print(f"      終了: RGB({style.fill.bottom_right.r}, {style.fill.bottom_right.g}, {style.fill.bottom_right.b})")
+        else:
+            print(f"    塗り: RGB({style.fill.r}, {style.fill.g}, {style.fill.b})")
+
         if style.shadow.enabled:
             print(f"    シャドウ: ぼかし={style.shadow.blur}")
 
