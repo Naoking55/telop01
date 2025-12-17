@@ -414,11 +414,10 @@ def convert_prsl_to_prtextstyle(prsl_path: str, output_path: str, template_path:
         if style.shadow.enabled:
             print(f"    シャドウ: ぼかし={style.shadow.blur}")
 
-        # 対応するテンプレートを選択（サイズで）
-        if i < len(template_binaries):
-            template = template_binaries[i]
-        else:
-            template = template_binaries[0]  # フォールバック
+        # 対応するテンプレートを選択（循環利用）
+        # テンプレート数を超える場合は、最初から繰り返し使用
+        template_index = i % len(template_binaries)
+        template = template_binaries[template_index]
 
         # 変換
         try:
