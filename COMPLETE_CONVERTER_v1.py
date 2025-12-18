@@ -295,6 +295,31 @@ def apply_gradient_colors(binary: bytearray, fill: Fill) -> bytearray:
 
     return binary
 
+def get_template_binaries(template_path: str) -> List[bytes]:
+    """テンプレートprtextstyleファイルからバイナリデータを抽出
+
+    Args:
+        template_path: テンプレートprtextstyleファイルのパス
+
+    Returns:
+        バイナリデータのリスト
+    """
+    import re
+
+    with open(template_path, 'r') as f:
+        template_content = f.read()
+
+    pattern = r'<StartKeyframeValue Encoding="base64" BinaryHash="[^"]+">([A-Za-z0-9+/=\s]+)</StartKeyframeValue>'
+    matches = re.findall(pattern, template_content, re.DOTALL)
+
+    template_binaries = []
+    for match in matches:
+        b64_clean = match.replace('\n', '').replace(' ', '').replace('\t', '')
+        binary = base64.b64decode(b64_clean)
+        template_binaries.append(binary)
+
+    return template_binaries
+
 def convert_style(style: Style, template_binary: bytes) -> bytes:
     """スタイルを変換"""
     # テンプレートをコピー
