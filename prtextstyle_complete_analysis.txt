@@ -1,0 +1,103 @@
+================================================================================
+prtextstyle 形式完全解析: TEMPLATE_SolidFill_White.prtextstyle
+================================================================================
+
+ルート要素: <PremiereData>
+ルート属性: {'Version': '3'}
+
+総タグ種類数: 121
+総要素数: 558
+
+================================================================================
+重要な要素
+================================================================================
+
+StyleProjectItem: 1 個
+  1. 白・ストローク無し
+     ObjectUID: a0f69477-5b16-40b1-b376-be897e06024b
+     ClassID: 31673410-6b9a-420b-990a-fdfe31ef94f3
+
+VideoFilterComponent (AE.ADBE Text): 1 個
+  1. ObjectID: 27
+
+ArbVideoComponentParam: 1 個
+  1. ソーステキスト
+     ObjectID: 40
+     バイナリサイズ: 452 bytes
+     最初の32バイト: b801000000000000443322110c000000000006000a0004000600000064000000
+
+================================================================================
+ClassID 一覧
+================================================================================
+18a35d66-597e-4157-b783-938b5bec3547: <CompileSettings>
+1c307a89-9318-47d7-a583-bf2553736543: <RootProjectItem>
+2db8f76b-2c37-48ee-925d-9a4f7278152d: <IngestSettings>
+313e54d4-6903-49ad-b0bf-8262cdd10f4e: <ArbVideoComponentParam>
+31673410-6b9a-420b-990a-fdfe31ef94f3: <StyleProjectItem>
+328c2aa2-47f9-4211-805b-b6a6dbd4ca29: <DummyCaptureSettings>
+34b10007-ab6d-49a7-bac5-7b60d919e387: <AudioCompileSettings>
+4c6ed82b-a81c-4df1-8bd0-750504c4b560: <ScratchDiskSettings>
+50c16708-a1a1-4d2f-98d5-4e283ae28353: <ProjectSettings>
+567bdf53-d6d9-4d61-b2f1-f4834bebea9b: <DefaultSequenceSettings>
+58474264-30c4-43a2-bba5-dc0812df8a3a: <VideoSettings>
+62ad66dd-0dcd-42da-a660-6d8fbde94876: <Project>
+6baf5521-b132-4634-840e-13cec5bc86a4: <AudioSettings>
+a4ff2d6e-7ac2-44f8-9d52-17d9ca50e542: <VideoComponentParam>
+c4372273-e1aa-4683-98aa-a2ceadf3066c: <WorkspaceSettings>
+ca81d347-309b-44d2-acc7-1c572efb973c: <PointComponentParam>
+cc12343e-f113-4d3b-ae05-b287db77d461: <VideoComponentParam>
+d10da199-beea-4dd1-b941-ed3a78766d50: <VideoFilterComponent>
+db372db5-7de2-4d3c-98ae-f42659d77b22: <VideoCompileSettings>
+fe47129e-6c94-4fc0-95d5-c056a517aaf3: <VideoComponentParam>
+
+================================================================================
+タグ出現回数（上位20）
+================================================================================
+<Name>: 23 回
+<Param>: 22 回
+  属性: ['Index', 'ObjectRef']
+<IsTimeVarying>: 22 回
+<ParameterControlType>: 22 回
+<ParameterID>: 22 回
+<StartKeyframe>: 21 回
+<VideoComponentParam>: 19 回
+  属性: ['ClassID', 'ObjectID', 'Version']
+<LowerBound>: 19 回
+<UpperBound>: 19 回
+<VideoSettings>: 14 回
+  属性: ['ClassID', 'ObjectID', 'ObjectRef', 'Version']
+<AudioSettings>: 14 回
+  属性: ['ClassID', 'ObjectID', 'ObjectRef', 'Version']
+<FrameRate>: 14 回
+<AudioCompileSettings>: 13 回
+  属性: ['ClassID', 'ObjectID', 'ObjectRef', 'Version']
+<VideoCompileSettings>: 12 回
+  属性: ['ClassID', 'ObjectID', 'ObjectRef', 'Version']
+<Compressor>: 12 回
+<FrameSize>: 7 回
+<PixelAspectRatio>: 7 回
+<MaximumBitDepth>: 7 回
+<ChannelType>: 7 回
+<VideoCompilerClassIDFourCC>: 6 回
+
+================================================================================
+XML構造の概要
+================================================================================
+<PremiereData> (64 children)
+  <Project/>
+  <Project ObjectID=1> (11 children)
+    <RootProjectItem/>
+    <ProjectSettings/>
+    <MovieCompileSettings/>
+    ... and 8 more
+  <RootProjectItem ObjectUID=c980d275...> (2 children)
+    <ProjectItem> (1 children)
+      <Name> = 'Root Bin'
+    <ProjectItemContainer> (1 children)
+      <Items> (1 children)
+  ... and 61 more
+
+================================================================================
+✅ 解析完了
+================================================================================
+統計データを prtextstyle_analysis_stats.json に保存しました

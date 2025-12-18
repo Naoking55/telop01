@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PremiereData Version="1">
+  <Styles>
+    <Style>
+      <Name>Test Style 1</Name>
+      <BinaryData Encoding="base64">AQAFAAAAQXJpYWwCAAQAAAAAAAAAAwAEAAAAAABAQgQAEAAAAAAAgD8AAAAAAAAAAAAAgD8=</BinaryData>
+    </Style>
+  </Styles>
+</PremiereData>

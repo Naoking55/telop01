@@ -1,0 +1,1122 @@
+{
+  "tag_counts": {
+    "stylelist": 1,
+    "styleblock": 10,
+    "text_specification": 10,
+    "font": 10,
+    "name": 10,
+    "family": 10,
+    "style": 10,
+    "bold": 10,
+    "italic": 10,
+    "type": 26,
+    "category": 10,
+    "underline": 10,
+    "small_caps": 10,
+    "linked": 20,
+    "broken_text_ref": 10,
+    "height": 10,
+    "width": 10,
+    "size": 41,
+    "ratio": 10,
+    "leading": 10,
+    "kerning": 10,
+    "slant": 10,
+    "small_caps_size": 10,
+    "baseline_shift": 10,
+    "style_data": 10,
+    "distort": 10,
+    "angle": 62,
+    "magnitude": 49,
+    "x": 23,
+    "y": 23,
+    "face": 10,
+    "shader": 13,
+    "colouring": 13,
+    "four_colour_ramp": 13,
+    "top_left": 13,
+    "red": 221,
+    "green": 216,
+    "blue": 221,
+    "alpha": 231,
+    "top_right": 13,
+    "bottom_left": 13,
+    "bottom_right": 13,
+    "top": 39,
+    "bottom": 39,
+    "left": 13,
+    "right": 13,
+    "all": 52,
+    "two_colour_ramp": 13,
+    "top_start": 13,
+    "bottom_start": 13,
+    "repeat": 13,
+    "radial": 13,
+    "two_colour_bevel": 13,
+    "balance": 13,
+    "tube": 13,
+    "light": 13,
+    "lit": 13,
+    "shape": 13,
+    "solid_colour": 13,
+    "texture": 13,
+    "on": 49,
+    "mix": 13,
+    "texture_alpha_is_key": 13,
+    "ramp_alpha_is_key": 13,
+    "offset": 26,
+    "auto_align": 13,
+    "object": 26,
+    "object_x": 26,
+    "object_y": 26,
+    "rule": 13,
+    "rule_x": 13,
+    "rule_y": 13,
+    "scaling": 13,
+    "horizontal": 13,
+    "vertical": 13,
+    "composite_rule": 13,
+    "invert_composite": 13,
+    "pixel_aspect_ratio": 13,
+    "tile_x": 13,
+    "tile_y": 13,
+    "alpha_scale": 13,
+    "auto_rotate": 13,
+    "auto_reflect": 13,
+    "sheen": 13,
+    "colour": 23,
+    "position": 13,
+    "embellishment__0": 10,
+    "existence": 120,
+    "embellishment__1": 10,
+    "embellishment__2": 10,
+    "embellishment__3": 10,
+    "embellishment__4": 10,
+    "embellishment__5": 10,
+    "embellishment__6": 10,
+    "embellishment__7": 10,
+    "embellishment__8": 10,
+    "embellishment__9": 10,
+    "embellishment_10": 10,
+    "embellishment_11": 10,
+    "inner_embellishment_count": 10,
+    "depth_angle": 10,
+    "shadow": 10,
+    "softness": 10,
+    "glow": 10,
+    "absolute_embelishment_sizes": 10,
+    "style_ref": 10,
+    "ramp_domain": 10,
+    "geometry": 3,
+    "edge": 3,
+    "depth": 3,
+    "drop_face": 3
+  },
+  "tag_attributes": {
+    "styleblock": [
+      "name",
+      "version"
+    ],
+    "name": [
+      "type"
+    ],
+    "family": [
+      "type"
+    ],
+    "style": [
+      "type"
+    ],
+    "bold": [
+      "type"
+    ],
+    "italic": [
+      "type"
+    ],
+    "type": [
+      "type"
+    ],
+    "category": [
+      "type"
+    ],
+    "underline": [
+      "type"
+    ],
+    "small_caps": [
+      "type"
+    ],
+    "linked": [
+      "type"
+    ],
+    "broken_text_ref": [
+      "type"
+    ],
+    "height": [
+      "type"
+    ],
+    "width": [
+      "type"
+    ],
+    "size": [
+      "type"
+    ],
+    "ratio": [
+      "type"
+    ],
+    "leading": [
+      "type"
+    ],
+    "kerning": [
+      "type"
+    ],
+    "slant": [
+      "type"
+    ],
+    "small_caps_size": [
+      "type"
+    ],
+    "baseline_shift": [
+      "type"
+    ],
+    "angle": [
+      "type"
+    ],
+    "magnitude": [
+      "type"
+    ],
+    "x": [
+      "type"
+    ],
+    "y": [
+      "type"
+    ],
+    "red": [
+      "type"
+    ],
+    "green": [
+      "type"
+    ],
+    "blue": [
+      "type"
+    ],
+    "alpha": [
+      "type"
+    ],
+    "top_start": [
+      "type"
+    ],
+    "bottom_start": [
+      "type"
+    ],
+    "repeat": [
+      "type"
+    ],
+    "radial": [
+      "type"
+    ],
+    "balance": [
+      "type"
+    ],
+    "tube": [
+      "type"
+    ],
+    "lit": [
+      "type"
+    ],
+    "shape": [
+      "type"
+    ],
+    "on": [
+      "type"
+    ],
+    "mix": [
+      "type"
+    ],
+    "texture_alpha_is_key": [
+      "type"
+    ],
+    "ramp_alpha_is_key": [
+      "type"
+    ],
+    "object": [
+      "type"
+    ],
+    "object_x": [
+      "type"
+    ],
+    "object_y": [
+      "type"
+    ],
+    "rule": [
+      "type"
+    ],
+    "rule_x": [
+      "type"
+    ],
+    "rule_y": [
+      "type"
+    ],
+    "horizontal": [
+      "type"
+    ],
+    "vertical": [
+      "type"
+    ],
+    "composite_rule": [
+      "type"
+    ],
+    "invert_composite": [
+      "type"
+    ],
+    "pixel_aspect_ratio": [
+      "type"
+    ],
+    "tile_x": [
+      "type"
+    ],
+    "tile_y": [
+      "type"
+    ],
+    "alpha_scale": [
+      "type"
+    ],
+    "auto_rotate": [
+      "type"
+    ],
+    "auto_reflect": [
+      "type"
+    ],
+    "existence": [
+      "type"
+    ],
+    "inner_embellishment_count": [
+      "type"
+    ],
+    "depth_angle": [
+      "type"
+    ],
+    "softness": [
+      "type"
+    ],
+    "glow": [
+      "type"
+    ],
+    "absolute_embelishment_sizes": [
+      "type"
+    ],
+    "style_ref": [
+      "type"
+    ],
+    "ramp_domain": [
+      "type"
+    ],
+    "all": [],
+    "auto_align": [],
+    "bottom": [],
+    "bottom_left": [],
+    "bottom_right": [],
+    "colour": [],
+    "colouring": [],
+    "depth": [],
+    "distort": [],
+    "drop_face": [],
+    "edge": [],
+    "embellishment_10": [],
+    "embellishment_11": [],
+    "embellishment__0": [],
+    "embellishment__1": [],
+    "embellishment__2": [],
+    "embellishment__3": [],
+    "embellishment__4": [],
+    "embellishment__5": [],
+    "embellishment__6": [],
+    "embellishment__7": [],
+    "embellishment__8": [],
+    "embellishment__9": [],
+    "face": [],
+    "font": [],
+    "four_colour_ramp": [],
+    "geometry": [],
+    "left": [],
+    "light": [],
+    "offset": [],
+    "position": [],
+    "right": [],
+    "scaling": [],
+    "shader": [],
+    "shadow": [],
+    "sheen": [],
+    "solid_colour": [],
+    "style_data": [],
+    "stylelist": [],
+    "text_specification": [],
+    "texture": [],
+    "top": [],
+    "top_left": [],
+    "top_right": [],
+    "two_colour_bevel": [],
+    "two_colour_ramp": []
+  },
+  "tag_children": {
+    "stylelist": [
+      "styleblock"
+    ],
+    "styleblock": [
+      "style_data",
+      "text_specification"
+    ],
+    "text_specification": [
+      "height",
+      "size",
+      "leading",
+      "kerning",
+      "ratio",
+      "small_caps_size",
+      "broken_text_ref",
+      "width",
+      "linked",
+      "underline",
+      "slant",
+      "font",
+      "baseline_shift",
+      "small_caps"
+    ],
+    "font": [
+      "name",
+      "style",
+      "type",
+      "bold",
+      "family",
+      "italic",
+      "category"
+    ],
+    "style_data": [
+      "embellishment__5",
+      "embellishment__3",
+      "embellishment__7",
+      "shadow",
+      "depth_angle",
+      "embellishment_11",
+      "embellishment__6",
+      "embellishment__4",
+      "embellishment__0",
+      "embellishment_10",
+      "style_ref",
+      "face",
+      "inner_embellishment_count",
+      "distort",
+      "linked",
+      "embellishment__2",
+      "embellishment__8",
+      "embellishment__1",
+      "embellishment__9",
+      "absolute_embelishment_sizes",
+      "ramp_domain"
+    ],
+    "distort": [
+      "angle",
+      "y",
+      "magnitude",
+      "x"
+    ],
+    "face": [
+      "shader"
+    ],
+    "shader": [
+      "colouring",
+      "on",
+      "sheen",
+      "texture"
+    ],
+    "colouring": [
+      "type",
+      "two_colour_ramp",
+      "four_colour_ramp",
+      "solid_colour",
+      "two_colour_bevel"
+    ],
+    "four_colour_ramp": [
+      "bottom_right",
+      "bottom",
+      "bottom_left",
+      "right",
+      "all",
+      "top_right",
+      "top_left",
+      "left",
+      "top"
+    ],
+    "top_left": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "top_right": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "bottom_left": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "bottom_right": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "top": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "bottom": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "left": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "right": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "all": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "two_colour_ramp": [
+      "bottom",
+      "top_start",
+      "all",
+      "angle",
+      "bottom_start",
+      "radial",
+      "repeat",
+      "top"
+    ],
+    "two_colour_bevel": [
+      "size",
+      "bottom",
+      "tube",
+      "lit",
+      "all",
+      "light",
+      "balance",
+      "shape",
+      "top"
+    ],
+    "light": [
+      "angle",
+      "magnitude"
+    ],
+    "solid_colour": [
+      "all"
+    ],
+    "texture": [
+      "tile_x",
+      "pixel_aspect_ratio",
+      "on",
+      "tile_y",
+      "alpha_scale",
+      "ramp_alpha_is_key",
+      "offset",
+      "texture_alpha_is_key",
+      "invert_composite",
+      "auto_rotate",
+      "mix",
+      "composite_rule",
+      "scaling",
+      "auto_reflect",
+      "auto_align"
+    ],
+    "offset": [
+      "angle",
+      "y",
+      "magnitude",
+      "x"
+    ],
+    "auto_align": [
+      "rule_x",
+      "object",
+      "object_y",
+      "rule",
+      "object_x",
+      "rule_y"
+    ],
+    "scaling": [
+      "object",
+      "object_y",
+      "vertical",
+      "object_x",
+      "horizontal"
+    ],
+    "sheen": [
+      "colour",
+      "on",
+      "position",
+      "size"
+    ],
+    "colour": [
+      "blue",
+      "alpha",
+      "green",
+      "red"
+    ],
+    "position": [
+      "angle",
+      "magnitude"
+    ],
+    "embellishment__0": [
+      "shader",
+      "geometry",
+      "existence"
+    ],
+    "embellishment__1": [
+      "existence"
+    ],
+    "embellishment__2": [
+      "existence"
+    ],
+    "embellishment__3": [
+      "existence"
+    ],
+    "embellishment__4": [
+      "existence"
+    ],
+    "embellishment__5": [
+      "existence"
+    ],
+    "embellishment__6": [
+      "existence"
+    ],
+    "embellishment__7": [
+      "existence"
+    ],
+    "embellishment__8": [
+      "existence"
+    ],
+    "embellishment__9": [
+      "existence"
+    ],
+    "embellishment_10": [
+      "existence"
+    ],
+    "embellishment_11": [
+      "existence"
+    ],
+    "shadow": [
+      "on",
+      "offset",
+      "glow",
+      "colour",
+      "softness"
+    ],
+    "geometry": [
+      "type",
+      "depth",
+      "drop_face",
+      "edge"
+    ],
+    "edge": [
+      "size"
+    ],
+    "depth": [
+      "size"
+    ],
+    "drop_face": [
+      "offset"
+    ],
+    "absolute_embelishment_sizes": [],
+    "alpha": [],
+    "alpha_scale": [],
+    "angle": [],
+    "auto_reflect": [],
+    "auto_rotate": [],
+    "balance": [],
+    "baseline_shift": [],
+    "blue": [],
+    "bold": [],
+    "bottom_start": [],
+    "broken_text_ref": [],
+    "category": [],
+    "composite_rule": [],
+    "depth_angle": [],
+    "existence": [],
+    "family": [],
+    "glow": [],
+    "green": [],
+    "height": [],
+    "horizontal": [],
+    "inner_embellishment_count": [],
+    "invert_composite": [],
+    "italic": [],
+    "kerning": [],
+    "leading": [],
+    "linked": [],
+    "lit": [],
+    "magnitude": [],
+    "mix": [],
+    "name": [],
+    "object": [],
+    "object_x": [],
+    "object_y": [],
+    "on": [],
+    "pixel_aspect_ratio": [],
+    "radial": [],
+    "ramp_alpha_is_key": [],
+    "ramp_domain": [],
+    "ratio": [],
+    "red": [],
+    "repeat": [],
+    "rule": [],
+    "rule_x": [],
+    "rule_y": [],
+    "shape": [],
+    "size": [],
+    "slant": [],
+    "small_caps": [],
+    "small_caps_size": [],
+    "softness": [],
+    "style": [],
+    "style_ref": [],
+    "texture_alpha_is_key": [],
+    "tile_x": [],
+    "tile_y": [],
+    "top_start": [],
+    "tube": [],
+    "type": [],
+    "underline": [],
+    "vertical": [],
+    "width": [],
+    "x": [],
+    "y": []
+  },
+  "tag_parents": {
+    "styleblock": [
+      "stylelist"
+    ],
+    "text_specification": [
+      "styleblock"
+    ],
+    "font": [
+      "text_specification"
+    ],
+    "name": [
+      "font"
+    ],
+    "family": [
+      "font"
+    ],
+    "style": [
+      "font"
+    ],
+    "bold": [
+      "font"
+    ],
+    "italic": [
+      "font"
+    ],
+    "type": [
+      "font",
+      "colouring",
+      "geometry"
+    ],
+    "category": [
+      "font"
+    ],
+    "underline": [
+      "text_specification"
+    ],
+    "small_caps": [
+      "text_specification"
+    ],
+    "linked": [
+      "style_data",
+      "text_specification"
+    ],
+    "broken_text_ref": [
+      "text_specification"
+    ],
+    "height": [
+      "text_specification"
+    ],
+    "width": [
+      "text_specification"
+    ],
+    "size": [
+      "depth",
+      "text_specification",
+      "sheen",
+      "edge",
+      "two_colour_bevel"
+    ],
+    "ratio": [
+      "text_specification"
+    ],
+    "leading": [
+      "text_specification"
+    ],
+    "kerning": [
+      "text_specification"
+    ],
+    "slant": [
+      "text_specification"
+    ],
+    "small_caps_size": [
+      "text_specification"
+    ],
+    "baseline_shift": [
+      "text_specification"
+    ],
+    "style_data": [
+      "styleblock"
+    ],
+    "distort": [
+      "style_data"
+    ],
+    "angle": [
+      "two_colour_ramp",
+      "position",
+      "offset",
+      "light",
+      "distort"
+    ],
+    "magnitude": [
+      "light",
+      "offset",
+      "distort",
+      "position"
+    ],
+    "x": [
+      "offset",
+      "distort"
+    ],
+    "y": [
+      "offset",
+      "distort"
+    ],
+    "face": [
+      "style_data"
+    ],
+    "shader": [
+      "embellishment__0",
+      "face"
+    ],
+    "colouring": [
+      "shader"
+    ],
+    "four_colour_ramp": [
+      "colouring"
+    ],
+    "top_left": [
+      "four_colour_ramp"
+    ],
+    "red": [
+      "bottom_right",
+      "bottom",
+      "bottom_left",
+      "right",
+      "all",
+      "top_right",
+      "colour",
+      "top_left",
+      "left",
+      "top"
+    ],
+    "green": [
+      "bottom_right",
+      "bottom",
+      "bottom_left",
+      "right",
+      "all",
+      "top_right",
+      "colour",
+      "top_left",
+      "left",
+      "top"
+    ],
+    "blue": [
+      "bottom_right",
+      "bottom",
+      "bottom_left",
+      "right",
+      "all",
+      "top_right",
+      "colour",
+      "top_left",
+      "left",
+      "top"
+    ],
+    "alpha": [
+      "bottom_right",
+      "bottom",
+      "bottom_left",
+      "right",
+      "all",
+      "top_right",
+      "colour",
+      "top_left",
+      "left",
+      "top"
+    ],
+    "top_right": [
+      "four_colour_ramp"
+    ],
+    "bottom_left": [
+      "four_colour_ramp"
+    ],
+    "bottom_right": [
+      "four_colour_ramp"
+    ],
+    "top": [
+      "two_colour_ramp",
+      "four_colour_ramp",
+      "two_colour_bevel"
+    ],
+    "bottom": [
+      "two_colour_ramp",
+      "four_colour_ramp",
+      "two_colour_bevel"
+    ],
+    "left": [
+      "four_colour_ramp"
+    ],
+    "right": [
+      "four_colour_ramp"
+    ],
+    "all": [
+      "two_colour_ramp",
+      "four_colour_ramp",
+      "two_colour_bevel",
+      "solid_colour"
+    ],
+    "two_colour_ramp": [
+      "colouring"
+    ],
+    "top_start": [
+      "two_colour_ramp"
+    ],
+    "bottom_start": [
+      "two_colour_ramp"
+    ],
+    "repeat": [
+      "two_colour_ramp"
+    ],
+    "radial": [
+      "two_colour_ramp"
+    ],
+    "two_colour_bevel": [
+      "colouring"
+    ],
+    "balance": [
+      "two_colour_bevel"
+    ],
+    "tube": [
+      "two_colour_bevel"
+    ],
+    "light": [
+      "two_colour_bevel"
+    ],
+    "lit": [
+      "two_colour_bevel"
+    ],
+    "shape": [
+      "two_colour_bevel"
+    ],
+    "solid_colour": [
+      "colouring"
+    ],
+    "texture": [
+      "shader"
+    ],
+    "on": [
+      "shader",
+      "sheen",
+      "texture",
+      "shadow"
+    ],
+    "mix": [
+      "texture"
+    ],
+    "texture_alpha_is_key": [
+      "texture"
+    ],
+    "ramp_alpha_is_key": [
+      "texture"
+    ],
+    "offset": [
+      "texture",
+      "shadow",
+      "drop_face"
+    ],
+    "auto_align": [
+      "texture"
+    ],
+    "object": [
+      "scaling",
+      "auto_align"
+    ],
+    "object_x": [
+      "scaling",
+      "auto_align"
+    ],
+    "object_y": [
+      "scaling",
+      "auto_align"
+    ],
+    "rule": [
+      "auto_align"
+    ],
+    "rule_x": [
+      "auto_align"
+    ],
+    "rule_y": [
+      "auto_align"
+    ],
+    "scaling": [
+      "texture"
+    ],
+    "horizontal": [
+      "scaling"
+    ],
+    "vertical": [
+      "scaling"
+    ],
+    "composite_rule": [
+      "texture"
+    ],
+    "invert_composite": [
+      "texture"
+    ],
+    "pixel_aspect_ratio": [
+      "texture"
+    ],
+    "tile_x": [
+      "texture"
+    ],
+    "tile_y": [
+      "texture"
+    ],
+    "alpha_scale": [
+      "texture"
+    ],
+    "auto_rotate": [
+      "texture"
+    ],
+    "auto_reflect": [
+      "texture"
+    ],
+    "sheen": [
+      "shader"
+    ],
+    "colour": [
+      "sheen",
+      "shadow"
+    ],
+    "position": [
+      "sheen"
+    ],
+    "embellishment__0": [
+      "style_data"
+    ],
+    "existence": [
+      "embellishment__5",
+      "embellishment__2",
+      "embellishment__3",
+      "embellishment_10",
+      "embellishment__7",
+      "embellishment__8",
+      "embellishment__1",
+      "embellishment__0",
+      "embellishment_11",
+      "embellishment__9",
+      "embellishment__6",
+      "embellishment__4"
+    ],
+    "embellishment__1": [
+      "style_data"
+    ],
+    "embellishment__2": [
+      "style_data"
+    ],
+    "embellishment__3": [
+      "style_data"
+    ],
+    "embellishment__4": [
+      "style_data"
+    ],
+    "embellishment__5": [
+      "style_data"
+    ],
+    "embellishment__6": [
+      "style_data"
+    ],
+    "embellishment__7": [
+      "style_data"
+    ],
+    "embellishment__8": [
+      "style_data"
+    ],
+    "embellishment__9": [
+      "style_data"
+    ],
+    "embellishment_10": [
+      "style_data"
+    ],
+    "embellishment_11": [
+      "style_data"
+    ],
+    "inner_embellishment_count": [
+      "style_data"
+    ],
+    "depth_angle": [
+      "style_data"
+    ],
+    "shadow": [
+      "style_data"
+    ],
+    "softness": [
+      "shadow"
+    ],
+    "glow": [
+      "shadow"
+    ],
+    "absolute_embelishment_sizes": [
+      "style_data"
+    ],
+    "style_ref": [
+      "style_data"
+    ],
+    "ramp_domain": [
+      "style_data"
+    ],
+    "geometry": [
+      "embellishment__0"
+    ],
+    "edge": [
+      "geometry"
+    ],
+    "depth": [
+      "geometry"
+    ],
+    "drop_face": [
+      "geometry"
+    ],
+    "stylelist": []
+  }
+}
